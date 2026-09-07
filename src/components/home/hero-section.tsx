@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,20 +12,21 @@ import { StatCounterCard } from "./stat-counter";
 
 const SLIDES = [
   {
-    src: "/brand/hero/hero-factory.png",
-    alt: "Turateks yağmurluk üretim hattı",
+    src: "/brand/hero/hero-1.mp4",
+    label: "Turateks yağmurluk üretim hattı",
   },
   {
-    src: "/brand/hero/hero-harbor.png",
-    alt: "Profesyonel yağmurluk — balıkçı ve kurye",
+    src: "/brand/hero/hero-2.mp4",
+    label: "Profesyonel yağmurluk — balıkçı ve kurye",
   },
 ] as const;
 
-const SLIDE_MS = 7000;
+const SLIDE_MS = 10000;
 
 export function HeroSection() {
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const goTo = useCallback((next: number) => {
     setIndex((next + SLIDES.length) % SLIDES.length);
@@ -38,9 +38,27 @@ export function HeroSection() {
     return () => window.clearInterval(timer);
   }, [index, goTo, reduced]);
 
+  useEffect(() => {
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return;
+      if (reduced) {
+        video.pause();
+        return;
+      }
+      if (i === index) {
+        video.currentTime = 0;
+        void video.play().catch(() => {
+          /* Autoplay may be blocked; muted + playsInline usually allows it. */
+        });
+      } else {
+        video.pause();
+      }
+    });
+  }, [index, reduced]);
+
   return (
     <section className="relative isolate min-h-[min(92vh,820px)] overflow-hidden text-white">
-      {/* Background slider */}
+      {/* Background video slider */}
       <div className="absolute inset-0 bg-charcoal" aria-hidden>
         {SLIDES.map((slide, i) => (
           <motion.div
@@ -50,13 +68,18 @@ export function HeroSection() {
             animate={{ opacity: i === index ? 1 : 0 }}
             transition={{ duration: reduced ? 0 : 1.35, ease: MOTION_EASE }}
           >
-            <Image
+            <video
+              ref={(el) => {
+                videoRefs.current[i] = el;
+              }}
               src={slide.src}
-              alt=""
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
+              className="absolute inset-0 size-full object-cover object-[62%_center] sm:object-[58%_center] lg:object-center"
+              muted
+              loop
+              playsInline
+              autoPlay={i === 0 && !reduced}
+              preload={i === 0 ? "auto" : "metadata"}
+              aria-label={slide.label}
             />
           </motion.div>
         ))}

@@ -28,6 +28,7 @@ Feature-local decisions live in each feature `05-decisions.md`. Copy **Approved*
 | DEC-022 | Approved | Money in DB is integer kuruş (TRY × 100) |
 | DEC-023 | Approved | App MySQL database name `turkey`; credentials only in `.env` (gitignored). VPS env is set by hand |
 | DEC-024 | Approved | Leftover WP pest-control/demo URLs and product-tag archives return 410, not 301 to home |
+| DEC-025 | Approved | Storefront UI typeface: Outfit self-hosted (`next/font/local`); Geist Mono self-hosted |
 
 ## How to add
 

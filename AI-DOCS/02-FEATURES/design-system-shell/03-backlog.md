@@ -11,6 +11,9 @@
 | DS-007 | 404 page | done | 2 |
 | DS-008 | Home landing motion (scroll + counters) | done | 2 |
 | DS-009 | Hero image slider + overlay | done | 2 |
+| DS-010 | Hero background videos (autoplay muted) | done | 2 |
+| DS-011 | Home trust bar under hero (TR copy) | done | 2 |
+| DS-012 | Home category showcase + Outfit typeface | done | 2 |
 
 ## Legend
 

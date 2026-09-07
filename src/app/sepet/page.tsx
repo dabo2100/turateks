@@ -9,8 +9,10 @@ export const metadata: Metadata = noIndexMetadata;
 export default async function SepetPage() {
   const settings = await getSettings();
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight">Sepet</h1>
+    <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
+      <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight text-charcoal md:mb-10 md:text-4xl">
+        Sepet
+      </h1>
       <CartView taxMode={settings.taxMode} taxPercent={settings.taxPercent} />
     </div>
   );

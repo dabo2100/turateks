@@ -7,3 +7,6 @@
 | CC-003 | `/odeme` form | done | 5 |
 | CC-004 | Create Order API | done | 5 |
 | CC-005 | Empty / error states | done | 5 |
+| CC-006 | Cart page layout match reference (table + summary + free-ship progress) | done | 5 |
+| CC-007 | Wire coupon codes to real discounts | pending | later |
+| CC-008 | Persist shipping method into checkout / order total | pending | later |

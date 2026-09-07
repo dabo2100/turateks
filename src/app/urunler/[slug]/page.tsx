@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
 import { ProductCard } from "@/components/catalog/product-card";
 import { ProductBuyBox } from "@/components/product/product-buy-box";
 import { ProductGallery } from "@/components/product/product-gallery";
+import { ProductInfoTabs } from "@/components/product/product-info-tabs";
 import { JsonLd } from "@/components/seo/json-ld";
 import { loadCatalog, loadCategories, loadProduct } from "@/lib/catalog";
 import { productFromPrice } from "@/lib/mock-catalog";
@@ -35,7 +37,7 @@ export default async function ProductPage({ params }: Props) {
   const category = categories.find((c) => c.slug === product.category);
   const related = catalog
     .filter((p) => p.category === product.category && p.slug !== product.slug)
-    .slice(0, 3);
+    .slice(0, 4);
 
   const crumbs = [
     { name: "Anasayfa", path: "/" },
@@ -45,7 +47,7 @@ export default async function ProductPage({ params }: Props) {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
       <JsonLd data={breadcrumbJsonLd(crumbs)} />
       <JsonLd
         data={productJsonLd({
@@ -57,7 +59,8 @@ export default async function ProductPage({ params }: Props) {
           price: productFromPrice(product),
         })}
       />
-      <p className="text-sm text-muted-foreground">
+
+      <nav className="text-sm text-muted-foreground" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-primary">
           Anasayfa
         </Link>
@@ -74,55 +77,53 @@ export default async function ProductPage({ params }: Props) {
           </>
         ) : null}
         <span className="mx-2">/</span>
-        {product.name}
-      </p>
+        <span className="text-charcoal">{product.name}</span>
+      </nav>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-2">
+      {/* Purchase area: gallery + variants only (no long description) */}
+      <div className="mt-8 grid items-start gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-12">
         <ProductGallery angles={product.angles} name={product.name} urls={product.imageUrls} />
-        <div>
-          {product.wholesale ? (
-            <span className="rounded bg-copper px-2 py-0.5 text-[10px] font-semibold text-white uppercase">
-              Toptan
-            </span>
-          ) : null}
-          <div className="mt-3 flex flex-wrap gap-1">
-            {product.tags.map((tag) => (
-              <Link
-                key={tag}
-                href={`/urunler?etiket=${encodeURIComponent(tag)}`}
-                className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground hover:border-primary"
-              >
-                {tag}
-              </Link>
-            ))}
+
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            {product.isNew ? (
+              <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-charcoal">
+                Yeni
+              </span>
+            ) : null}
+            {product.wholesale ? (
+              <span className="rounded-full bg-copper/15 px-3 py-1 text-xs font-semibold text-copper">
+                Toptan
+              </span>
+            ) : null}
           </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight">{product.name}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">SKU: {product.sku}</p>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground">{product.description}</p>
+
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-charcoal sm:text-4xl">
+            {product.name}
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">SKU: {product.sku}</p>
+
           <div className="mt-8">
             <ProductBuyBox product={product} />
           </div>
         </div>
       </div>
 
-      {product.specs.length > 0 ? (
-        <section className="mt-16">
-          <h2 className="text-xl font-semibold">Teknik özellikler</h2>
-          <div className="mt-4 divide-y rounded-xl border border-border">
-            {product.specs.map((row) => (
-              <div key={row.label} className="flex justify-between gap-4 px-4 py-3 text-sm">
-                <span className="text-muted-foreground">{row.label}</span>
-                <span className="font-medium">{row.value}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      <ProductInfoTabs product={product} />
 
       {related.length > 0 ? (
-        <section className="mt-16">
-          <h2 className="text-xl font-semibold">Benzer ürünler</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="mt-16 sm:mt-20">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-xl font-semibold text-charcoal sm:text-2xl">Beğenebileceğiniz ürünler</h2>
+            <Link
+              href={category ? `/urunler?kategori=${category.slug}` : "/urunler"}
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-charcoal hover:text-primary"
+            >
+              Tümünü gör
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
             {related.map((item) => (
               <ProductCard key={item.slug} product={item} />
             ))}

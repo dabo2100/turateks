@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { StoreShell } from "@/components/layout/store-shell";
@@ -11,14 +11,20 @@ import { getSettings } from "@/lib/settings";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin", "latin-ext"],
+/** Self-hosted — avoids next/font Google download failures offline/proxy. */
+const outfit = localFont({
+  src: "../fonts/outfit/Outfit-Variable.ttf",
+  variable: "--font-outfit",
+  weight: "100 900",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "../fonts/geist-mono/GeistMono-Variable.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "100 900",
+  display: "swap",
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,7 +54,7 @@ export default async function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex h-full min-h-full flex-col bg-background text-foreground">
         <JsonLd

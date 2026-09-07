@@ -1,14 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Factory, ShieldCheck, Truck } from "lucide-react";
+import {
+  BadgePercent,
+  Factory,
+  Headphones,
+  RefreshCcw,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { CategoryShowcase } from "@/components/home/category-showcase";
 import { HeroSection } from "@/components/home/hero-section";
 import { ProductCard } from "@/components/catalog/product-card";
 import { buttonVariants } from "@/components/ui/button";
 import type { MockProduct } from "@/lib/mock-catalog";
-import { CATEGORY_NAV } from "@/lib/navigation";
 import { whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +32,29 @@ const REASON_ICONS = {
   shield: ShieldCheck,
   truck: Truck,
 } as const;
+
+const TRUST_ITEMS = [
+  {
+    icon: BadgePercent,
+    title: "Toptan özel fiyatlar",
+    text: "Üreticiden kademeli fiyat avantajı",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Güvenli ödeme",
+    text: "PayTR ile güvenli ödeme",
+  },
+  {
+    icon: Headphones,
+    title: "24 saat hizmet",
+    text: "Her an yanınızdayız",
+  },
+  {
+    icon: RefreshCcw,
+    title: "Kolay iade",
+    text: "Sorunsuz iade imkanı",
+  },
+] as const;
 
 type BlogTeaser = {
   slug: string;
@@ -44,20 +74,31 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
     <>
       <HeroSection />
 
-      <nav className="border-b border-border bg-surface">
+      <section className="border-b border-border bg-white" aria-label="Alışveriş avantajları">
         <ScrollReveal>
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 py-3 text-sm sm:gap-x-8">
-            {CATEGORY_NAV.map((item, i) => (
-              <span key={item.href} className="flex items-center gap-6 sm:gap-8">
-                {i > 0 ? <span className="hidden text-silver sm:inline">|</span> : null}
-                <Link href={item.href} className="text-charcoal transition-colors hover:text-primary">
-                  {item.label}
-                </Link>
-              </span>
+          <ul className="mx-auto grid max-w-6xl gap-4 px-4 py-5 sm:grid-cols-2 sm:gap-0 sm:py-6 lg:grid-cols-4">
+            {TRUST_ITEMS.map(({ icon: Icon, title, text }, i) => (
+              <li
+                key={title}
+                className={cn(
+                  "flex items-center gap-3 sm:px-4 lg:px-5",
+                  i > 0 && "sm:border-l sm:border-border",
+                )}
+              >
+                <Icon className="size-8 shrink-0 text-charcoal" strokeWidth={1.5} aria-hidden />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold tracking-wide text-charcoal uppercase sm:text-[0.8125rem]">
+                    {title}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{text}</p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </ScrollReveal>
-      </nav>
+      </section>
+
+      <CategoryShowcase />
 
       <section className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
         <ScrollReveal>
