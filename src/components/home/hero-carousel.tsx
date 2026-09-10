@@ -18,6 +18,7 @@ import { whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 import { MOTION_EASE } from "./motion-presets";
+import { MobileHeroCarousel } from "./mobile-hero-carousel";
 
 const AUTO_PLAY_MS = 6500;
 
@@ -96,13 +97,22 @@ function ArrowButton({ direction, onClick }: { direction: "previous" | "next"; o
   );
 }
 
-export function HeroCarousel() {
+function DesktopHeroCarousel() {
   const reduced = useReducedMotion();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const total = HERO_SLIDES.length;
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)");
+    const onChange = () => setIsDesktop(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrent((previous) => (previous + 1) % total);
@@ -117,12 +127,13 @@ export function HeroCarousel() {
   }, []);
 
   useEffect(() => {
-    if (reduced || isPaused) return;
+    if (reduced || isPaused || !isDesktop) return;
     const timer = window.setInterval(nextSlide, AUTO_PLAY_MS);
     return () => window.clearInterval(timer);
-  }, [isPaused, nextSlide, reduced]);
+  }, [isDesktop, isPaused, nextSlide, reduced]);
 
   useEffect(() => {
+    if (!isDesktop) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") prevSlide();
       if (event.key === "ArrowRight") nextSlide();
@@ -130,7 +141,7 @@ export function HeroCarousel() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [nextSlide, prevSlide]);
+  }, [isDesktop, nextSlide, prevSlide]);
 
   const handleTouchStart = (event: TouchEvent) => {
     touchStartX.current = event.targetTouches[0].clientX;
@@ -241,5 +252,18 @@ export function HeroCarousel() {
         <SlideDots current={current} onSelect={goToSlide} />
       </div>
     </section>
+  );
+}
+
+export function HeroCarousel() {
+  return (
+    <>
+      <div className="block md:hidden">
+        <MobileHeroCarousel />
+      </div>
+      <div className="hidden md:block">
+        <DesktopHeroCarousel />
+      </div>
+    </>
   );
 }

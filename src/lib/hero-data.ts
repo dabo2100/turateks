@@ -28,6 +28,9 @@ export interface HeroSlideData {
   desktopSrc: string;
   mobileSrc: StaticImageData;
   alt: string;
+  mobileAccent: string;
+  mobileCtaLabel: string;
+  mobileObjectPosition?: string;
 }
 
 export const HERO_SLIDES: HeroSlideData[] = [
@@ -37,9 +40,13 @@ export const HERO_SLIDES: HeroSlideData[] = [
     title: "GIRGIRCI TAKIM",
     description:
       "Zorlu deniz şartlarına özel, dayanıklı ve su geçirmez gırgır balıkçı takım muşamba modelleriyle tanışın.",
-    highlights: ["Zorlu Deniz Şartları", "Ekstra Dayanıklı Muşamba", "Balıkçı Takım"],
+    highlights: [
+      "Zorlu Deniz Şartları",
+      "Ekstra Dayanıklı Muşamba",
+      "Balıkçı Takım",
+    ],
     ctaPrimary: {
-      label: "Ürünü İncele",
+      label: "Şimdi Keşfet",
       href: "/urunler/fermuarli-balikci-takim",
     },
     ctaSecondary: {
@@ -49,6 +56,9 @@ export const HERO_SLIDES: HeroSlideData[] = [
     desktopSrc: girgirciDesktop,
     mobileSrc: girgirciMobile,
     alt: "Turateks Gırgırcı Takım Balıkçı Muşambası",
+    mobileAccent: "#2ee6b6",
+    mobileCtaLabel: "Şimdi Keşfet",
+    mobileObjectPosition: "center top",
   },
   {
     id: "balikci-takim",
@@ -58,7 +68,7 @@ export const HERO_SLIDES: HeroSlideData[] = [
       "Su geçirmez, hafif ve rahat balıkçı tip takım yağmurluk modelleriyle açık havada profesyonel koruma ve hareket özgürlüğünü deneyimleyin.",
     highlights: ["Hafif ve Rahat", "Profesyonel Koruma", "Hareket Özgürlüğü"],
     ctaPrimary: {
-      label: "Ürünü İncele",
+      label: "Şimdi Keşfet",
       href: "/urunler/balikci-yagmurluk-pro",
     },
     ctaSecondary: {
@@ -68,6 +78,9 @@ export const HERO_SLIDES: HeroSlideData[] = [
     desktopSrc: balikciDesktop,
     mobileSrc: balikciMobile,
     alt: "Turateks Balıkçı Takım Yağmurluk",
+    mobileAccent: "#22d3ee",
+    mobileCtaLabel: "Şimdi Keşfet",
+    mobileObjectPosition: "center top",
   },
   {
     id: "boy-pardesu",
@@ -75,9 +88,13 @@ export const HERO_SLIDES: HeroSlideData[] = [
     title: "BOY PARDESÜ",
     description:
       "Su geçirmez boy pardösü yağmurluk, farklı renk seçenekleri ve reflektör detaylarıyla en şiddetli yağışlarda bile şık ve tam koruma sağlar.",
-    highlights: ["Reflektör Detayları", "Farklı Renk Seçenekleri", "Tam Boy Koruma"],
+    highlights: [
+      "Reflektör Detayları",
+      "Farklı Renk Seçenekleri",
+      "Tam Boy Koruma",
+    ],
     ctaPrimary: {
-      label: "Ürünü İncele",
+      label: "Şimdi Keşfet",
       href: "/urunler/neon-pardesu",
     },
     ctaSecondary: {
@@ -87,6 +104,9 @@ export const HERO_SLIDES: HeroSlideData[] = [
     desktopSrc: boyPardesuDesktop,
     mobileSrc: boyPardesuMobile,
     alt: "Turateks Boy Pardesü Yağmurluk",
+    mobileAccent: "#e2fb00",
+    mobileCtaLabel: "Şimdi Keşfet",
+    mobileObjectPosition: "center top",
   },
   {
     id: "cizmeli-urunler",
@@ -96,7 +116,7 @@ export const HERO_SLIDES: HeroSlideData[] = [
       "Tek parça ısı yalıtımlı tulum-çizme wader, su geçirmez yapısıyla zorlu koşullarda tam koruma sunar. Tüm bedenlerde mevcuttur.",
     highlights: ["Isı Yalıtımlı", "Tulum-Çizme Wader", "Tüm Bedenlerde Mevcut"],
     ctaPrimary: {
-      label: "Ürünü İncele",
+      label: "Şimdi Keşfet",
       href: "/urunler/pvc-tulum-pro",
     },
     ctaSecondary: {
@@ -106,6 +126,9 @@ export const HERO_SLIDES: HeroSlideData[] = [
     desktopSrc: cizmeliDesktop,
     mobileSrc: cizmeliMobile,
     alt: "Turateks Çizmeli Tulum Ürünleri",
+    mobileAccent: "#ff7a13",
+    mobileCtaLabel: "Şimdi Keşfet",
+    mobileObjectPosition: "center top",
   },
   {
     id: "motorcu-takim",
@@ -113,9 +136,13 @@ export const HERO_SLIDES: HeroSlideData[] = [
     title: "MOTORCU TAKIM",
     description:
       "Reflektif motorcu yağmurluk takım (kurye) modelleriyle tanışın. Su geçirmez koruma ve gece sürüşlerinde maksimum güvenlik sunar. Yakalı ve kapşonlu detaylı iki farklı model seçeneğiyle mevcuttur.",
-    highlights: ["Reflektif Gece Güvenliği", "Yakalı ve Kapüşonlu Seçenek", "Kurye & Motorcu"],
+    highlights: [
+      "Reflektif Gece Güvenliği",
+      "Yakalı ve Kapüşonlu Seçenek",
+      "Kurye & Motorcu",
+    ],
     ctaPrimary: {
-      label: "Ürünü İncele",
+      label: "Şimdi Keşfet",
       href: "/urunler/kurye-takimi-x200",
     },
     ctaSecondary: {
@@ -125,5 +152,8 @@ export const HERO_SLIDES: HeroSlideData[] = [
     desktopSrc: motorcuDesktop,
     mobileSrc: motorcuMobile,
     alt: "Turateks Reflektif Motorcu Yağmurluk Takım",
+    mobileAccent: "#ccff00",
+    mobileCtaLabel: "Şimdi Keşfet",
+    mobileObjectPosition: "center top",
   },
 ];
