@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { prisma } from "@/lib/db";
+import { MOCK_POSTS } from "@/lib/mock-catalog";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -11,10 +12,23 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function BlogIndexPage() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const posts = await prisma.post
+    .findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+    })
+    .catch(() =>
+      MOCK_POSTS.map((p, idx) => ({
+        id: String(idx + 1),
+        slug: p.slug,
+        title: p.title,
+        excerpt: `${p.tag} • ${p.minutes} dakika`,
+        body: "",
+        published: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
+    );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">

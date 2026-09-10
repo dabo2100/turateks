@@ -34,16 +34,37 @@ export const DEFAULT_PAGES = [
 ] as const;
 
 export async function ensureDefaultPages() {
-  for (const page of DEFAULT_PAGES) {
-    await prisma.page.upsert({
-      where: { slug: page.slug },
-      update: {},
-      create: page,
-    });
+  try {
+    for (const page of DEFAULT_PAGES) {
+      await prisma.page.upsert({
+        where: { slug: page.slug },
+        update: {},
+        create: page,
+      });
+    }
+  } catch {
+    // Database offline or unreachable
   }
 }
 
 export async function getPage(slug: string) {
-  await ensureDefaultPages();
-  return prisma.page.findUnique({ where: { slug } });
+  try {
+    const existing = await prisma.page.findUnique({ where: { slug } });
+    if (existing) return existing;
+    await ensureDefaultPages();
+    return await prisma.page.findUnique({ where: { slug } });
+  } catch {
+    const fallback = DEFAULT_PAGES.find((p) => p.slug === slug);
+    if (!fallback) return null;
+    return {
+      id: fallback.slug,
+      slug: fallback.slug,
+      title: fallback.title,
+      body: fallback.body,
+      seoTitle: null,
+      seoDesc: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 }

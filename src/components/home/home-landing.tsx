@@ -12,7 +12,8 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 
 import { CategoryShowcase } from "@/components/home/category-showcase";
-import { HeroSection } from "@/components/home/hero-section";
+import { HeroCarousel } from "@/components/home/hero-carousel";
+import { VideoShowcaseSection } from "@/components/home/video-showcase-section";
 import { ProductCard } from "@/components/catalog/product-card";
 import { buttonVariants } from "@/components/ui/button";
 import type { MockProduct } from "@/lib/mock-catalog";
@@ -72,7 +73,7 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
 
   return (
     <>
-      <HeroSection />
+      <HeroCarousel />
 
       <section className="border-b border-border bg-white" aria-label="Alışveriş avantajları">
         <ScrollReveal>
@@ -97,6 +98,8 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
           </ul>
         </ScrollReveal>
       </section>
+
+      <VideoShowcaseSection />
 
       <CategoryShowcase />
 
