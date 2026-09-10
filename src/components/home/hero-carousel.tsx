@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type TouchEvent,
+} from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowRight,
@@ -35,27 +41,49 @@ function HeroHeading({ title }: { title: string }) {
   );
 }
 
-function SlideDots({ current, onSelect }: { current: number; onSelect: (index: number) => void }) {
+function SlideDots({
+  current,
+  onSelect,
+}: {
+  current: number;
+  onSelect: (index: number) => void;
+}) {
   return (
-    <div className="flex items-center gap-2" aria-label={"Slayt " + (current + 1) + " / " + HERO_SLIDES.length}>
+    <div
+      className="flex items-center gap-2"
+      aria-label={"Slayt " + (current + 1) + " / " + HERO_SLIDES.length}
+    >
       {HERO_SLIDES.map((slide, index) => (
         <button
           key={slide.id}
           type="button"
           onClick={() => onSelect(index)}
-          aria-label={(index + 1) + ". slayt"}
+          aria-label={index + 1 + ". slayt"}
           aria-current={current === index ? "true" : undefined}
           className={cn(
-            "h-2 rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary",
-            current === index ? "w-8 bg-primary" : "w-2 bg-white/40 hover:bg-white/70",
+            "h-2 rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white",
+            current === index
+              ? "w-8 opacity-100"
+              : "w-2 bg-white/40 opacity-70 hover:bg-white/70 hover:opacity-100",
           )}
+          style={
+            current === index
+              ? { backgroundColor: slide.mobileAccent }
+              : undefined
+          }
         />
       ))}
     </div>
   );
 }
 
-function HeroBackground({ slide, eager }: { slide: HeroSlideData; eager: boolean }) {
+function HeroBackground({
+  slide,
+  eager,
+}: {
+  slide: HeroSlideData;
+  eager: boolean;
+}) {
   return (
     <motion.picture
       className="absolute inset-0 block"
@@ -64,7 +92,10 @@ function HeroBackground({ slide, eager }: { slide: HeroSlideData; eager: boolean
       exit={{ opacity: 0 }}
       transition={{ duration: 0.65, ease: MOTION_EASE }}
     >
-      <source media="(max-width: 767px)" srcSet={encodeURI(slide.mobileSrc.src)} />
+      <source
+        media="(max-width: 767px)"
+        srcSet={encodeURI(slide.mobileSrc.src)}
+      />
       {/* eslint-disable-next-line @next/next/no-img-element -- picture provides art-directed desktop/mobile source selection. */}
       <img
         src={slide.desktopSrc}
@@ -78,7 +109,13 @@ function HeroBackground({ slide, eager }: { slide: HeroSlideData; eager: boolean
   );
 }
 
-function ArrowButton({ direction, onClick }: { direction: "previous" | "next"; onClick: () => void }) {
+function ArrowButton({
+  direction,
+  onClick,
+}: {
+  direction: "previous" | "next";
+  onClick: () => void;
+}) {
   const previous = direction === "previous";
   const Icon = previous ? ChevronLeft : ChevronRight;
 
@@ -175,7 +212,11 @@ function DesktopHeroCarousel() {
       onTouchEnd={handleTouchEnd}
     >
       <AnimatePresence initial={false} mode="sync">
-        <HeroBackground key={activeSlide.id} slide={activeSlide} eager={current === 0} />
+        <HeroBackground
+          key={activeSlide.id}
+          slide={activeSlide}
+          eager={current === 0}
+        />
       </AnimatePresence>
 
       {/* The art remains a single scene; this only cushions live copy against its deliberate negative space. */}
@@ -185,7 +226,7 @@ function DesktopHeroCarousel() {
       <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={activeSlide.id + "-content"}
-          className="relative z-20 flex h-full items-end px-5 pb-20 pt-14 sm:px-6 md:items-center md:px-[clamp(48px,5vw,100px)] md:py-20"
+          className="relative z-20 flex h-full items-end pl-52 pb-20 pt-14 sm:px-6 md:items-center md:pl-52 "
           initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
@@ -211,8 +252,15 @@ function DesktopHeroCarousel() {
               aria-label={activeSlide.title + " öne çıkan özellikleri"}
             >
               {activeSlide.highlights.map((highlight) => (
-                <li key={highlight} className="flex items-center gap-1.5 text-xs font-semibold leading-4 text-white/95 md:text-sm">
-                  <Check className="size-4 shrink-0 text-primary" strokeWidth={3} aria-hidden />
+                <li
+                  key={highlight}
+                  className="flex items-center gap-1.5 text-xs font-semibold leading-4 text-white/95 md:text-sm"
+                >
+                  <Check
+                    className="size-4 shrink-0 text-primary"
+                    strokeWidth={3}
+                    aria-hidden
+                  />
                   {highlight}
                 </li>
               ))}
@@ -221,16 +269,26 @@ function DesktopHeroCarousel() {
             <div className="mt-5 flex flex-col gap-2.5 sm:flex-row md:mt-8 md:gap-3">
               <Link
                 href={activeSlide.ctaPrimary.href}
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "h-12 w-full gap-2 px-5 font-bold shadow-lg shadow-primary/25 transition-shadow hover:shadow-primary/45 sm:w-auto",
-                )}
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border px-6 text-sm font-bold tracking-wider uppercase shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-95 sm:w-auto"
+                style={{
+                  backgroundColor: "rgba(10, 15, 24, 0.75)",
+                  borderColor: activeSlide.mobileAccent,
+                  color: activeSlide.mobileAccent,
+                  boxShadow: `0 0 20px -2px ${activeSlide.mobileAccent}35`,
+                }}
               >
-                {activeSlide.ctaPrimary.label}
-                <ArrowRight className="size-4" aria-hidden />
+                <span>{activeSlide.mobileCtaLabel}</span>
+                <ArrowRight
+                  className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
+                  style={{ color: activeSlide.mobileAccent }}
+                  aria-hidden
+                />
               </Link>
               <Link
-                href={whatsappHref(activeSlide.title + " hakkında bilgi ve toptan teklif almak istiyorum.")}
+                href={whatsappHref(
+                  activeSlide.title +
+                    " hakkında bilgi ve toptan teklif almak istiyorum.",
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
