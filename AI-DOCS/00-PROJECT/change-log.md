@@ -1,5 +1,12 @@
 # Project change log
 
+### 2026-09-15 — Local database + admin recovered from cPanel snapshot
+- MySQL 8.4 local runtime added; Prisma schema synchronized.
+- Imported 21 WordPress products and 49 images with no missing files; seeded six CMS pages.
+- `/admin/giris`, login API, and authenticated `/admin` verified HTTP 200.
+- Sensitive SQL/uploads and local MySQL state are excluded from Git.
+- After a reboot: `npm run dev` starts local MySQL automatically through `predev`.
+
 ### 2026-08-26 — Remaining phases 6 leftover + 8/9 close
 - AU-005: `/hesap` teslimat adresi; `/odeme` prefill from session.
 - WS-001 mapping documented. WP-001 / WP-004 marked done (already in schema + admin).

@@ -92,7 +92,10 @@ export function organizationJsonLd(settings: {
   email: string;
   phoneDisplay: string;
   address: string;
+  facebook?: string;
+  instagram?: string;
 }) {
+  const sameAs = [settings.facebook || SITE.facebook, settings.instagram || SITE.instagram].filter(Boolean);
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -106,6 +109,7 @@ export function organizationJsonLd(settings: {
       streetAddress: settings.address,
       addressCountry: "TR",
     },
+    ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
 
@@ -153,22 +157,141 @@ export function articleJsonLd(input: {
   title: string;
   excerpt: string;
   slug: string;
+  image?: string;
+  keywords?: string[];
   datePublished: Date;
   dateModified: Date;
 }) {
+  const fullImageUrl = input.image
+    ? absoluteUrl(input.image)
+    : absoluteUrl("/brand/hero/hero-factory.png");
+
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: input.title,
     description: truncateText(input.excerpt || input.title),
+    image: [fullImageUrl],
     datePublished: input.datePublished.toISOString(),
     dateModified: input.dateModified.toISOString(),
-    mainEntityOfPage: absoluteUrl(`/blog/${input.slug}`),
-    author: { "@type": "Organization", name: SITE.name },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": absoluteUrl(`/blog/${input.slug}`),
+    },
+    inLanguage: "tr-TR",
+    keywords: input.keywords?.join(", "),
+    author: {
+      "@type": "Organization",
+      name: SITE.name,
+      url: siteUrl(),
+    },
     publisher: {
       "@type": "Organization",
       name: SITE.name,
-      logo: { "@type": "ImageObject", url: absoluteUrl("/brand/logo.png") },
+      url: siteUrl(),
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/brand/logo.png"),
+      },
     },
   };
 }
+
+export function contactPageJsonLd(settings: {
+  name: string;
+  email: string;
+  phoneDisplay: string;
+  address: string;
+  facebook?: string;
+  instagram?: string;
+}) {
+  const sameAs = [settings.facebook || SITE.facebook, settings.instagram || SITE.instagram].filter(Boolean);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": absoluteUrl("/iletisim#webpage"),
+        url: absoluteUrl("/iletisim"),
+        name: `İletişim & Toptan Sipariş Hattı | ${settings.name}`,
+        description: `${settings.name} fabrika ve merkez ofis iletişim bilgileri. Toptan yağmurluk siparişi, kurumsal logo baskı ve özel imalat fiyat teklifleri.`,
+        breadcrumb: { "@id": absoluteUrl("/iletisim#breadcrumb") },
+        mainEntity: { "@id": absoluteUrl("/#organization") },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": absoluteUrl("/iletisim#breadcrumb"),
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Ana Sayfa",
+            item: siteUrl(),
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "İletişim",
+            item: absoluteUrl("/iletisim"),
+          },
+        ],
+      },
+      {
+        "@type": ["LocalBusiness", "Manufacturer"],
+        "@id": absoluteUrl("/#organization"),
+        name: settings.name,
+        url: siteUrl(),
+        logo: absoluteUrl("/brand/logo.png"),
+        image: absoluteUrl("/brand/hero/hero-factory.png"),
+        telephone: settings.phoneDisplay,
+        email: settings.email,
+        priceRange: "$$",
+        sameAs: sameAs.length > 0 ? sameAs : undefined,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: settings.address,
+          addressLocality: "Yıldırım",
+          addressRegion: "Bursa",
+          addressCountry: "TR",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: 40.1885,
+          longitude: 29.061,
+        },
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+            ],
+            opens: "08:30",
+            closes: "18:30",
+          },
+        ],
+        contactPoint: [
+          {
+            "@type": "ContactPoint",
+            telephone: settings.phoneDisplay,
+            contactType: "sales",
+            areaServed: "TR",
+            availableLanguage: ["Turkish", "English", "Arabic"],
+          },
+          {
+            "@type": "ContactPoint",
+            telephone: settings.phoneDisplay,
+            contactType: "customer service",
+            areaServed: "TR",
+            availableLanguage: ["Turkish", "English", "Arabic"],
+          },
+        ],
+      },
+    ],
+  };
+}
+

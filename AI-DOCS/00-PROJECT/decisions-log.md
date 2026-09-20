@@ -29,9 +29,13 @@ Feature-local decisions live in each feature `05-decisions.md`. Copy **Approved*
 | DEC-023 | Approved | App MySQL database name `turkey`; credentials only in `.env` (gitignored). VPS env is set by hand |
 | DEC-024 | Approved | Leftover WP pest-control/demo URLs and product-tag archives return 410, not 301 to home |
 | DEC-025 | Approved | Storefront UI typeface: Outfit self-hosted (`next/font/local`); Geist Mono self-hosted |
+<<<<<<< HEAD
 | DEC-026 | Approved | Admin panel visual system is independent mint SaaS theme; storefront brand colors unchanged |
 | DEC-027 | Approved | Admin product images: drag-drop upload to `public/uploads/products/` |
 | DEC-028 | Approved | Admin Categories CRUD; wholesale = boolean + `/toptan` listing + `Toptan` tag |
+=======
+| DEC-026 | Approved | Raw WordPress cPanel exports stay gitignored and are used only for one-way import; the Next.js runtime never depends on the live WordPress database. |
+>>>>>>> 1a60ce13e48154f667815bb05fdaefd62cc77af1
 
 ## How to add
 

@@ -6,7 +6,7 @@ export function WhatsappFab({ phone = SITE.whatsapp }: { phone?: string }) {
       href={whatsappHref("Merhaba, ürünleriniz hakkında bilgi almak istiyorum.", phone)}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed right-4 bottom-4 z-50 inline-flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105"
+      className="fixed right-3 bottom-3 z-50 inline-flex size-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 sm:right-4 sm:bottom-4 sm:size-14"
       aria-label="WhatsApp ile yazın"
     >
       <svg viewBox="0 0 24 24" className="size-7 fill-current" aria-hidden>

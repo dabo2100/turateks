@@ -4,6 +4,16 @@ import { WP_PERMANENT_REDIRECTS } from "./src/lib/wp-redirects";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  turbopack: {
+    rules: {
+      "*.jpe": {
+        type: "asset",
+      },
+    },
+  },
+  images: {
+    qualities: [75, 90],
+  },
   async redirects() {
     return WP_PERMANENT_REDIRECTS;
   },

@@ -15,3 +15,5 @@ Script is repeatable (upsert by slug) without duplicating SKUs.
 2. Count products = 21
 3. Open one PDP image 200
 4. Re-run seed — still 21
+5. Verify image count = 49 and missing image count = 0 for the 2026-09-15 cPanel snapshot
+6. Verify `wp-upload/` is ignored by Git

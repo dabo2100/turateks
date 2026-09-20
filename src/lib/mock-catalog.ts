@@ -221,26 +221,11 @@ export const MOCK_PRODUCTS: MockProduct[] = [
   },
 ];
 
-export const MOCK_POSTS = [
-  {
-    slug: "pvc-mi-polyester-mi",
-    title: "PVC mi, Polyester mi? Profesyonel Yağmurluk Seçimi",
-    tag: "Ürün Bilgisi",
-    minutes: 5,
-  },
-  {
-    slug: "toptan-yagmurluk-alirken",
-    title: "Toptan Yağmurluk Alırken Dikkat Edilmesi Gerekenler",
-    tag: "Toptan",
-    minutes: 7,
-  },
-  {
-    slug: "su-sutunu-nedir",
-    title: "Su Geçirmezlik Standartları: Su Sütunu Nedir?",
-    tag: "Teknik",
-    minutes: 4,
-  },
-] as const;
+export { BLOG_POSTS, type BlogPost } from "./blog-data";
+import { BLOG_POSTS } from "./blog-data";
+
+export const MOCK_POSTS = BLOG_POSTS;
+
 
 export function formatTry(value: number) {
   return new Intl.NumberFormat("tr-TR", {

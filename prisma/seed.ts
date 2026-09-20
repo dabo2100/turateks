@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-import { CATEGORIES, MOCK_PRODUCTS } from "../src/lib/mock-catalog";
+import { CATEGORIES, MOCK_PRODUCTS, BLOG_POSTS } from "../src/lib/mock-catalog";
 
 const prisma = new PrismaClient();
 
@@ -108,6 +108,27 @@ async function main() {
   }
 
   console.log(`Seeded ${MOCK_PRODUCTS.length} products into turkey DB.`);
+
+  for (const post of BLOG_POSTS) {
+    await prisma.post.upsert({
+      where: { slug: post.slug },
+      update: {
+        title: post.title,
+        excerpt: post.excerpt,
+        body: post.body,
+        published: true,
+      },
+      create: {
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        body: post.body,
+        published: true,
+      },
+    });
+  }
+
+  console.log(`Seeded ${BLOG_POSTS.length} blog posts into DB.`);
 }
 
 main()

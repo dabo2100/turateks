@@ -6,6 +6,8 @@ export const SITE = {
   email: "info@turateksyagmurluk.com",
   whatsapp: "905313797314",
   address: "Duaçınarı Mah. Yeşilova Cad. No: 28/1 Yıldırım / Bursa",
+  facebook: "https://www.facebook.com/share/1F7qGhXA7S/",
+  instagram: "https://www.instagram.com/turateksyagmurluk",
 } as const;
 
 export function whatsappHref(text?: string, phone: string = SITE.whatsapp) {

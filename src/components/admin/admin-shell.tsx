@@ -21,8 +21,8 @@ const TITLE_MAP: { prefix: string; title: string }[] = [
 ];
 
 export function AdminShell({ email, children }: { email: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+<<<<<<< HEAD
   const [navPath, setNavPath] = useState(pathname);
 
   if (navPath !== pathname) {
@@ -34,11 +34,15 @@ export function AdminShell({ email, children }: { email: string; children: React
     const match = TITLE_MAP.find((item) => pathname === item.prefix || pathname.startsWith(`${item.prefix}/`));
     return match?.title ?? "Yönetim";
   }, [pathname]);
+=======
+  const [openedAtPath, setOpenedAtPath] = useState<string | null>(null);
+  const open = openedAtPath === pathname;
+>>>>>>> 1a60ce13e48154f667815bb05fdaefd62cc77af1
 
   useEffect(() => {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") setOpenedAtPath(null);
     }
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -57,7 +61,7 @@ export function AdminShell({ email, children }: { email: string; children: React
           aria-expanded={open}
           aria-controls="admin-nav"
           aria-label="Menüyü aç"
-          onClick={() => setOpen(true)}
+          onClick={() => setOpenedAtPath(pathname)}
         >
           <Menu className="size-5" />
         </button>
@@ -72,7 +76,7 @@ export function AdminShell({ email, children }: { email: string; children: React
           type="button"
           className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           aria-label="Menüyü kapat"
-          onClick={() => setOpen(false)}
+          onClick={() => setOpenedAtPath(null)}
         />
       ) : null}
 
@@ -92,7 +96,7 @@ export function AdminShell({ email, children }: { email: string; children: React
             type="button"
             className="inline-flex size-10 items-center justify-center rounded-xl hover:bg-muted"
             aria-label="Menüyü kapat"
-            onClick={() => setOpen(false)}
+            onClick={() => setOpenedAtPath(null)}
           >
             <X className="size-5" />
           </button>
