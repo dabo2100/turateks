@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Search, User, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { CartButton } from "@/components/cart/cart-button";
-import { useState } from "react";
 
 import { MAIN_NAV } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
@@ -14,22 +14,51 @@ import { cn } from "@/lib/utils";
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const handleLogoClick = () => {
+    setOpen(false);
+    if (pathname === "/") {
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const updateHeader = () => setScrolled(window.scrollY > 8);
+
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#222222] text-white">
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-[100] bg-[#222222] text-white transition-[background-color,box-shadow,backdrop-filter] duration-300",
+        scrolled &&
+          "border-b border-white/10 bg-[#222222]/80 shadow-lg shadow-black/15 backdrop-blur-xl supports-[backdrop-filter]:bg-[#222222]/70",
+      )}
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-2.5"
+          onClick={handleLogoClick}
+          aria-label="Turateks ana sayfa"
+        >
           <Image
-            src="/brand/logo.png"
+            src="/brand/logo-enhanced.png"
             alt="Turateks Yağmurluk"
-            width={150}
-            height={34}
-            className="h-8 w-auto"
+            width={774}
+            height={236}
+            className="h-11 w-auto"
             priority
           />
-          <span className="hidden text-[11px] font-semibold tracking-[0.16em] uppercase sm:inline">
-            Turateks Yağmurluk
-          </span>
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm md:flex">

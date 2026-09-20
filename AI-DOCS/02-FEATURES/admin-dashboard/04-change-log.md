@@ -1,5 +1,13 @@
 # Change Log — Admin dashboard
 
+### 2026-09-15 — Local `/admin` Prisma recovery
+- **Author:** Codex
+- **Cause:** `.env` targeted MySQL on `127.0.0.1:3306`, but no MySQL server was installed or listening. Storefront fallback hid the outage while admin correctly surfaced the Prisma initialization error.
+- **What:** Added a local MySQL start command, pushed the Prisma schema, imported the WordPress snapshot, seeded six CMS pages, and verified the login page, login API, and authenticated `/admin` all return HTTP 200.
+- **Current data:** 21 products, 3 categories, 49 product images, 21 price tiers, 6 pages, and the env-backed super admin.
+- **Developer start:** `npm run dev` now runs `db:start` automatically through `predev`; `npm run db:start` remains available explicitly. MySQL is bound to `127.0.0.1` only.
+- **Files:** `scripts/start-local-mysql.mjs`, `package.json`, `src/components/admin/admin-shell.tsx`.
+
 ### 2026-08-23 — Admin drawer + min sidebar width
 - Desktop nav at least 250px (`max(10%, 250px)`). Mobile: hamburger off-canvas drawer.
 - Page headers/tables wrap on small screens; main pane still scrolls internally.

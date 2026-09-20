@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { HomeLanding } from "@/components/home/home-landing";
 import { loadCatalog } from "@/lib/catalog";
 import { prisma } from "@/lib/db";
+import { ensureCategoryAssetsSynced } from "@/lib/category-sync";
+import { ensureHeroAssetsSynced } from "@/lib/hero-sync";
+import { MOCK_POSTS } from "@/lib/mock-catalog";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -13,14 +16,24 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function HomePage() {
+  ensureHeroAssetsSynced();
+  await ensureCategoryAssetsSynced();
   const [catalog, posts] = await Promise.all([
     loadCatalog(),
-    prisma.post.findMany({
-      where: { published: true },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-      select: { slug: true, title: true, createdAt: true },
-    }),
+    prisma.post
+      .findMany({
+        where: { published: true },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+        select: { slug: true, title: true, createdAt: true },
+      })
+      .catch(() =>
+        MOCK_POSTS.map((p) => ({
+          slug: p.slug,
+          title: p.title,
+          createdAt: new Date(),
+        })),
+      ),
   ]);
 
   return (

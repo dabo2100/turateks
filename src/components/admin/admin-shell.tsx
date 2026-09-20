@@ -8,17 +8,14 @@ import { AdminNav } from "@/components/admin/admin-nav";
 import { cn } from "@/lib/utils";
 
 export function AdminShell({ email, children }: { email: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  const [openedAtPath, setOpenedAtPath] = useState<string | null>(null);
+  const open = openedAtPath === pathname;
 
   useEffect(() => {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") setOpenedAtPath(null);
     }
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -37,7 +34,7 @@ export function AdminShell({ email, children }: { email: string; children: React
           aria-expanded={open}
           aria-controls="admin-nav"
           aria-label="Menüyü aç"
-          onClick={() => setOpen(true)}
+          onClick={() => setOpenedAtPath(pathname)}
         >
           <Menu className="size-5" />
         </button>
@@ -52,7 +49,7 @@ export function AdminShell({ email, children }: { email: string; children: React
           type="button"
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
           aria-label="Menüyü kapat"
-          onClick={() => setOpen(false)}
+          onClick={() => setOpenedAtPath(null)}
         />
       ) : null}
 
@@ -72,7 +69,7 @@ export function AdminShell({ email, children }: { email: string; children: React
             type="button"
             className="inline-flex size-10 items-center justify-center rounded-md hover:bg-white/10"
             aria-label="Menüyü kapat"
-            onClick={() => setOpen(false)}
+            onClick={() => setOpenedAtPath(null)}
           >
             <X className="size-5" />
           </button>

@@ -1,5 +1,16 @@
 # Change Log — Design system & shell
 
+### 2026-09-09 — Code-driven product hero content (DS-014)
+- Removed the baked marketing copy and artwork logos from the visible hero by masking those areas and rendering headings, descriptions, feature lists, CTAs, and carousel navigation as real, accessible HTML.
+- Rebuilt the mobile hero to use the product visual without the baked vertical artwork, then render the same product content in a responsive code-based panel.
+- Switched the visual layer to `next/image` at high delivery quality for optimized responsive images.
+- **Files:** `src/components/home/hero-carousel.tsx`, `src/lib/hero-data.ts`
+
+### 2026-09-09 — Product-artwork homepage hero (DS-013)
+- Connected each product slide to its approved widescreen visual, preserving the supplied left-side composition, CTA artwork, product imagery, and rain treatment.
+- Replaced the desktop placeholder with the actual artwork and placed accessible, functional links and carousel hit areas over the graphic controls.
+- **Files:** `src/components/home/hero-carousel.tsx`, `src/lib/hero-data.ts`
+
 ### 2026-08-29 — Self-host Outfit (and Geist Mono)
 - Fixed `next/font` Google download failure by switching to `next/font/local` with files under `src/fonts/`.
 - **Files:** `src/app/layout.tsx`, `src/fonts/outfit/Outfit-Variable.ttf`, `src/fonts/geist-mono/GeistMono-Variable.woff2`

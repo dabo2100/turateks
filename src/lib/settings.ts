@@ -59,9 +59,13 @@ function parseSettings(rows: { key: string; value: string }[]): SiteSettings {
 }
 
 export const getSettings = cache(async (): Promise<SiteSettings> => {
-  const rows = await prisma.setting.findMany();
-  if (rows.length === 0) return DEFAULTS;
-  return parseSettings(rows);
+  try {
+    const rows = await prisma.setting.findMany();
+    if (rows.length === 0) return DEFAULTS;
+    return parseSettings(rows);
+  } catch {
+    return DEFAULTS;
+  }
 });
 
 export async function saveSettings(input: Omit<SiteSettings, "phoneHref">) {

@@ -12,8 +12,9 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 
 import { CategoryShowcase } from "@/components/home/category-showcase";
-import { HeroSection } from "@/components/home/hero-section";
-import { ProductCard } from "@/components/catalog/product-card";
+import { FeaturedProductCarousel } from "@/components/home/featured-product-carousel";
+import { HeroCarousel } from "@/components/home/hero-carousel";
+import { VideoShowcaseSection } from "@/components/home/video-showcase-section";
 import { buttonVariants } from "@/components/ui/button";
 import type { MockProduct } from "@/lib/mock-catalog";
 import { whatsappHref } from "@/lib/site";
@@ -25,7 +26,11 @@ import {
   SCROLL_VIEWPORT,
   WHOLESALE_STEPS,
 } from "./motion-presets";
-import { ScrollReveal, ScrollRevealItem, ScrollRevealStagger } from "./scroll-reveal";
+import {
+  ScrollReveal,
+  ScrollRevealItem,
+  ScrollRevealStagger,
+} from "./scroll-reveal";
 
 const REASON_ICONS = {
   factory: Factory,
@@ -72,9 +77,12 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
 
   return (
     <>
-      <HeroSection />
+      <HeroCarousel />
 
-      <section className="border-b border-border bg-white" aria-label="Alışveriş avantajları">
+      <section
+        className="border-b border-border bg-white "
+        aria-label="Alışveriş avantajları"
+      >
         <ScrollReveal>
           <ul className="mx-auto grid max-w-6xl gap-4 px-4 py-5 sm:grid-cols-2 sm:gap-0 sm:py-6 lg:grid-cols-4">
             {TRUST_ITEMS.map(({ icon: Icon, title, text }, i) => (
@@ -85,12 +93,18 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
                   i > 0 && "sm:border-l sm:border-border",
                 )}
               >
-                <Icon className="size-8 shrink-0 text-charcoal" strokeWidth={1.5} aria-hidden />
+                <Icon
+                  className="size-8 shrink-0 text-charcoal"
+                  strokeWidth={1.5}
+                  aria-hidden
+                />
                 <div className="min-w-0">
                   <p className="text-xs font-semibold tracking-wide text-charcoal uppercase sm:text-[0.8125rem]">
                     {title}
                   </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{text}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+                    {text}
+                  </p>
                 </div>
               </li>
             ))}
@@ -100,23 +114,26 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
 
       <CategoryShowcase />
 
+      <VideoShowcaseSection />
+
       <section className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
         <ScrollReveal>
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Öne çıkan ürünler</p>
+          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            Öne çıkan ürünler
+          </p>
           <div className="mt-2 flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Katalog</h2>
-            <Link href="/urunler" className="shrink-0 text-sm text-primary hover:underline">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Katalog
+            </h2>
+            <Link
+              href="/urunler"
+              className="shrink-0 text-sm text-primary hover:underline"
+            >
               Tümünü gör →
             </Link>
           </div>
         </ScrollReveal>
-        <ScrollRevealStagger className="mt-8 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {catalog.slice(0, 4).map((product) => (
-            <ScrollRevealItem key={product.slug}>
-              <ProductCard product={product} />
-            </ScrollRevealItem>
-          ))}
-        </ScrollRevealStagger>
+        <FeaturedProductCarousel products={catalog} />
       </section>
 
       <section className="bg-surface">
@@ -127,7 +144,14 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
               <ScrollRevealItem key={title}>
                 <motion.div
                   className="h-full rounded-xl bg-white p-5 sm:p-6"
-                  whileHover={reduced ? undefined : { y: -4, transition: { duration: 0.25, ease: MOTION_EASE } }}
+                  whileHover={
+                    reduced
+                      ? undefined
+                      : {
+                          y: -4,
+                          transition: { duration: 0.25, ease: MOTION_EASE },
+                        }
+                  }
                 >
                   <motion.div
                     initial={reduced ? false : { scale: 0.85, opacity: 0 }}
@@ -138,7 +162,9 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
                     <Icon className="size-6 text-primary" aria-hidden />
                   </motion.div>
                   <h3 className="mt-4 text-lg font-semibold">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    {text}
+                  </p>
                 </motion.div>
               </ScrollRevealItem>
             );
@@ -149,13 +175,15 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
       <section className="bg-[#222222] text-white">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
           <ScrollReveal>
-            <p className="text-xs font-semibold tracking-wide text-primary uppercase">Toptan alım</p>
+            <p className="text-xs font-semibold tracking-wide text-primary uppercase">
+              Toptan alım
+            </p>
             <h2 className="mt-2 max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl">
               Doğrudan üreticiden alın
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">
-              10 adet ve üzeri siparişlerde kademeli toptan fiyat. Özel baskı ve kurumsal teklifler için WhatsApp veya
-              formu kullanın.
+              10 adet ve üzeri siparişlerde kademeli toptan fiyat. Özel baskı ve
+              kurumsal teklifler için WhatsApp veya formu kullanın.
             </p>
           </ScrollReveal>
 
@@ -186,10 +214,17 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
 
       <section className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
         <ScrollReveal>
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Blog</p>
+          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            Blog
+          </p>
           <div className="mt-2 flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Teknik & sektör</h2>
-            <Link href="/blog" className="shrink-0 text-sm text-primary hover:underline">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Teknik & sektör
+            </h2>
+            <Link
+              href="/blog"
+              className="shrink-0 text-sm text-primary hover:underline"
+            >
               Tüm yazılar →
             </Link>
           </div>
@@ -197,7 +232,9 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
         <ScrollRevealStagger className="mt-8 grid gap-5 sm:gap-6 md:grid-cols-3">
           {posts.length === 0 ? (
             <ScrollRevealItem>
-              <p className="text-sm text-muted-foreground">Yayınlanmış yazı henüz yok.</p>
+              <p className="text-sm text-muted-foreground">
+                Yayınlanmış yazı henüz yok.
+              </p>
             </ScrollRevealItem>
           ) : (
             posts.map((post) => (
@@ -209,7 +246,9 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
                   <p className="text-xs text-muted-foreground">
                     {new Date(post.createdAt).toLocaleDateString("tr-TR")}
                   </p>
-                  <h3 className="mt-3 font-semibold tracking-tight">{post.title}</h3>
+                  <h3 className="mt-3 font-semibold tracking-tight">
+                    {post.title}
+                  </h3>
                 </Link>
               </ScrollRevealItem>
             ))

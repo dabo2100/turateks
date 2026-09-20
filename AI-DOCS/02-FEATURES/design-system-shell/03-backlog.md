@@ -14,6 +14,8 @@
 | DS-010 | Hero background videos (autoplay muted) | done | 2 |
 | DS-011 | Home trust bar under hero (TR copy) | done | 2 |
 | DS-012 | Home category showcase + Outfit typeface | done | 2 |
+| DS-013 | Connect approved widescreen product hero artboards to the homepage slider | done | 2 |
+| DS-014 | Replace baked hero artwork text and logos with accessible code-based content | done | 2 |
 
 ## Legend
 

@@ -49,3 +49,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Local WordPress export and database runtime (may contain credentials/customer data)
+/wp-upload/
+/.mysql-data/
+/.mysql-data-incomplete-*/
+/.mysql-runtime/
+
