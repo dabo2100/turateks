@@ -1,6 +1,11 @@
 /**
- * One-way import: WordPress dump DB `turkey_wp` → Prisma app DB `turkey`.
- * Source dump: ../app/sql/local.sql (imported separately into turkey_wp).
+ * One-way import: WordPress source DB → Prisma app DB.
+ *
+ * Local defaults expect the cPanel export in `wp-upload/`:
+ * - SQL imported into local database `turkey_wp`
+ * - `uploads.zip` extracted to `wp-upload/extracted/uploads`
+ *
+ * Every source setting can be overridden with WP_DB_* / WP_UPLOADS_PATH.
  */
 import { createConnection } from "mysql2/promise";
 import { PrismaClient } from "@prisma/client";
@@ -9,15 +14,21 @@ import path from "node:path";
 
 const prisma = new PrismaClient();
 
-const WP_UPLOADS = path.resolve(__dirname, "../../app/public/wp-content/uploads");
+const LOCAL_WP_UPLOADS = path.resolve(__dirname, "../wp-upload/extracted/uploads");
+const LEGACY_WP_UPLOADS = path.resolve(__dirname, "../../app/public/wp-content/uploads");
+const WP_UPLOADS = process.env.WP_UPLOADS_PATH
+  ? path.resolve(process.env.WP_UPLOADS_PATH)
+  : fs.existsSync(LOCAL_WP_UPLOADS)
+    ? LOCAL_WP_UPLOADS
+    : LEGACY_WP_UPLOADS;
 const PUBLIC_UPLOADS = path.resolve(__dirname, "../public/uploads");
 
 const WP_URL = {
-  host: "127.0.0.1",
-  port: 3306,
-  user: "root",
-  password: "",
-  database: "turkey_wp",
+  host: process.env.WP_DB_HOST ?? "127.0.0.1",
+  port: Number(process.env.WP_DB_PORT ?? 3306),
+  user: process.env.WP_DB_USER ?? "root",
+  password: process.env.WP_DB_PASSWORD ?? "",
+  database: process.env.WP_DB_NAME ?? "turkey_wp",
 };
 
 function stripHtml(html: string) {
@@ -35,19 +46,6 @@ function tryToKurus(raw: string | number | null) {
   const n = Number(String(raw).replace(",", "."));
   if (!Number.isFinite(n)) return 0;
   return Math.round(n * 100);
-}
-
-function slugify(s: string) {
-  return s
-    .toLowerCase()
-    .replace(/ı/g, "i")
-    .replace(/ş/g, "s")
-    .replace(/ğ/g, "g")
-    .replace(/ü/g, "u")
-    .replace(/ö/g, "o")
-    .replace(/ç/g, "c")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
 }
 
 function copyUpload(relative: string) {
@@ -103,9 +101,12 @@ async function main() {
 
   console.log(`WP published products: ${rows.length}`);
 
-  await prisma.product.deleteMany();
-  await prisma.tag.deleteMany();
-  await prisma.category.deleteMany();
+  if (rows.length === 0) {
+    throw new Error("WordPress source contains no published products; import cancelled.");
+  }
+  if (!fs.existsSync(WP_UPLOADS)) {
+    throw new Error(`WordPress uploads directory not found: ${WP_UPLOADS}`);
+  }
 
   const [catRows] = await wp.query(
     `SELECT t.term_id, t.name, t.slug
@@ -130,6 +131,8 @@ async function main() {
   });
 
   let imported = 0;
+  let importedImages = 0;
+  let missingImages = 0;
   const usedSkus = new Set<string>();
 
   for (const p of rows) {
@@ -197,6 +200,11 @@ async function main() {
       const file = await attachmentFile(wp, aid);
       if (!file) continue;
       const url = copyUpload(file);
+      if (!url) {
+        missingImages += 1;
+        console.warn(`  ! Missing image: ${file}`);
+        continue;
+      }
       await prisma.productImage.create({
         data: {
           productId: saved.id,
@@ -205,6 +213,7 @@ async function main() {
           sortOrder: sortOrder++,
         },
       });
+      importedImages += 1;
     }
 
     await prisma.priceTier.create({
@@ -221,7 +230,11 @@ async function main() {
   }
 
   await wp.end();
-  console.log(`Imported ${imported} WordPress products into turkey.`);
+  const totalProducts = await prisma.product.count();
+  console.log(
+    `Imported ${imported} WordPress products and ${importedImages} images into turkey ` +
+      `(missing images: ${missingImages}, total products: ${totalProducts}).`,
+  );
 }
 
 main()

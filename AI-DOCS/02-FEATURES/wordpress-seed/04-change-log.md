@@ -1,5 +1,13 @@
 # Change Log — WordPress seed
 
+### 2026-09-15 — cPanel snapshot restored locally
+- **Author:** Codex
+- **What:** Installed MySQL 8.4 locally, loaded `turateksyagmurlu_k.sql` into read-only source database `turkey_wp`, extracted the supplied uploads archive, pushed the Prisma schema, and imported 21 published products + 49 images with 0 missing images.
+- **Safety:** `wp-upload/`, `.mysql-data/`, and `.mysql-runtime/` are gitignored. The importer now validates that products and uploads exist before writing and no longer clears unrelated app products globally.
+- **Commands:** `npm run db:start`, `npm run db:push`, `npm run db:import:wp`.
+- **Source fact:** The supplied dump contains 0 `product_variation` posts, so no WooCommerce variation rows are available to import.
+- **Files:** `.gitignore`, `package.json`, `scripts/start-local-mysql.mjs`, `prisma/seed-from-wp.ts`.
+
 ### 2026-08-26 — WS-001 map documented
 - WP tables → Prisma table added to `01-feature-brief.md`. Seed script already implemented the map.
 

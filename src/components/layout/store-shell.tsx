@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { SiteHeader } from "@/components/layout/site-header";
 
 export function StoreShell({
@@ -21,8 +22,10 @@ export function StoreShell({
   return (
     <>
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <div className="h-16 shrink-0" aria-hidden="true" />
+      <main className="flex-1 ">{children}</main>
       {footer}
+      <ScrollToTop />
       {fab}
     </>
   );

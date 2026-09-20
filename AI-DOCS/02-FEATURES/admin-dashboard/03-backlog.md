@@ -10,3 +10,4 @@
 | AD-006 | Settings screen | done | 8 |
 | AD-007 | Admin email/password login + reset page | done | 8 |
 | AD-008 | Add/list extra admin users in dashboard | done | 8 |
+| AD-009 | Restore local Prisma/MySQL runtime and verify `/admin` login end-to-end | done | recovery |

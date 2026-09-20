@@ -226,79 +226,81 @@ function DesktopHeroCarousel() {
       <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={activeSlide.id + "-content"}
-          className="relative z-20 flex h-full items-end pl-52 pb-20 pt-14 sm:px-6 md:items-center md:pl-52 "
+          className="relative z-20 flex h-full items-center"
           initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: reduced ? 0 : 0.38, ease: MOTION_EASE }}
         >
-          <div className="w-full md:w-[min(620px,38vw)]">
-            <span className="inline-flex items-center gap-2 rounded-md border border-primary/65 bg-black/20 px-3 py-1.5 text-[10px] font-bold tracking-[0.12em] text-primary uppercase backdrop-blur-sm md:text-xs">
-              <ShieldCheck className="size-3.5" aria-hidden />
-              {activeSlide.badge}
-            </span>
+          <div className="mx-auto w-full max-w-6xl px-4">
+            <div className="ml-12 w-full max-w-[34rem] rounded-2xl border border-white/10 bg-black/15 p-6 shadow-2xl shadow-black/10 backdrop-blur-[2px] lg:p-7 xl:ml-0">
+              <span className="inline-flex items-center gap-2 rounded-md border border-primary/65 bg-black/25 px-3 py-1.5 text-xs font-bold tracking-[0.12em] text-primary uppercase backdrop-blur-sm">
+                <ShieldCheck className="size-3.5" aria-hidden />
+                {activeSlide.badge}
+              </span>
 
-            <div className="mt-4 hidden text-[clamp(3.375rem,4.5vw,5.125rem)] md:block">
-              <HeroHeading title={activeSlide.title} />
-            </div>
+              <div className="mt-4 hidden text-[clamp(3.25rem,4.2vw,4.75rem)] md:block">
+                <HeroHeading title={activeSlide.title} />
+              </div>
 
-            {/* Each supplied phone composition already includes its campaign heading, so a second mobile H1 would duplicate it. */}
-            <p className="mt-3 max-w-[32.5rem] text-sm leading-6 text-white/88 sm:text-[0.95rem] md:mt-5 md:text-[clamp(1rem,1.15vw,1.125rem)] md:leading-7">
-              {activeSlide.description}
-            </p>
+              {/* Each supplied phone composition already includes its campaign heading, so a second mobile H1 would duplicate it. */}
+              <p className="mt-4 max-w-[30rem] text-[clamp(0.95rem,1vw,1.0625rem)] leading-7 text-white/85">
+                {activeSlide.description}
+              </p>
 
-            <ul
-              className="mt-4 flex flex-wrap gap-x-4 gap-y-2 md:mt-6"
-              aria-label={activeSlide.title + " öne çıkan özellikleri"}
-            >
-              {activeSlide.highlights.map((highlight) => (
-                <li
-                  key={highlight}
-                  className="flex items-center gap-1.5 text-xs font-semibold leading-4 text-white/95 md:text-sm"
+              <ul
+                className="mt-5 flex max-w-[30rem] flex-wrap gap-x-4 gap-y-2.5"
+                aria-label={activeSlide.title + " öne çıkan özellikleri"}
+              >
+                {activeSlide.highlights.map((highlight) => (
+                  <li
+                    key={highlight}
+                    className="flex items-center gap-1.5 text-sm font-semibold leading-5 text-white/95"
+                  >
+                    <Check
+                      className="size-4 shrink-0 text-primary"
+                      strokeWidth={3}
+                      aria-hidden
+                    />
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href={activeSlide.ctaPrimary.href}
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border px-6 text-sm font-bold tracking-wider uppercase shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                  style={{
+                    backgroundColor: "rgba(10, 15, 24, 0.75)",
+                    borderColor: activeSlide.mobileAccent,
+                    color: activeSlide.mobileAccent,
+                    boxShadow: `0 0 20px -2px ${activeSlide.mobileAccent}35`,
+                  }}
                 >
-                  <Check
-                    className="size-4 shrink-0 text-primary"
-                    strokeWidth={3}
+                  <span>{activeSlide.mobileCtaLabel}</span>
+                  <ArrowRight
+                    className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
+                    style={{ color: activeSlide.mobileAccent }}
                     aria-hidden
                   />
-                  {highlight}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row md:mt-8 md:gap-3">
-              <Link
-                href={activeSlide.ctaPrimary.href}
-                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border px-6 text-sm font-bold tracking-wider uppercase shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-95 sm:w-auto"
-                style={{
-                  backgroundColor: "rgba(10, 15, 24, 0.75)",
-                  borderColor: activeSlide.mobileAccent,
-                  color: activeSlide.mobileAccent,
-                  boxShadow: `0 0 20px -2px ${activeSlide.mobileAccent}35`,
-                }}
-              >
-                <span>{activeSlide.mobileCtaLabel}</span>
-                <ArrowRight
-                  className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
-                  style={{ color: activeSlide.mobileAccent }}
-                  aria-hidden
-                />
-              </Link>
-              <Link
-                href={whatsappHref(
-                  activeSlide.title +
-                    " hakkında bilgi ve toptan teklif almak istiyorum.",
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ size: "lg", variant: "outline" }),
-                  "h-12 w-full gap-2 border-white/30 bg-black/25 px-5 font-bold text-white backdrop-blur-sm hover:bg-white/10 hover:text-white sm:w-auto",
-                )}
-              >
-                <MessageCircle className="size-4 text-[#25D366]" aria-hidden />
-                {activeSlide.ctaSecondary.label}
-              </Link>
+                </Link>
+                <Link
+                  href={whatsappHref(
+                    activeSlide.title +
+                      " hakkında bilgi ve toptan teklif almak istiyorum.",
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants({ size: "lg", variant: "outline" }),
+                    "h-12 gap-2 border-white/30 bg-black/25 px-5 font-bold text-white backdrop-blur-sm hover:bg-white/10 hover:text-white",
+                  )}
+                >
+                  <MessageCircle className="size-4 text-[#25D366]" aria-hidden />
+                  {activeSlide.ctaSecondary.label}
+                </Link>
+              </div>
             </div>
           </div>
         </motion.div>
