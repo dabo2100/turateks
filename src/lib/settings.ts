@@ -13,6 +13,8 @@ export type SiteSettings = {
   email: string;
   whatsapp: string;
   address: string;
+  facebook: string;
+  instagram: string;
   taxMode: TaxMode;
   taxPercent: number;
   printTerms: boolean;
@@ -27,6 +29,8 @@ const DEFAULTS: SiteSettings = {
   email: SITE.email,
   whatsapp: SITE.whatsapp,
   address: SITE.address,
+  facebook: SITE.facebook,
+  instagram: SITE.instagram,
   taxMode: "included",
   taxPercent: 20,
   printTerms: false,
@@ -51,6 +55,8 @@ function parseSettings(rows: { key: string; value: string }[]): SiteSettings {
     email: map.get("email") || DEFAULTS.email,
     whatsapp: map.get("whatsapp") || DEFAULTS.whatsapp,
     address: map.get("address") || DEFAULTS.address,
+    facebook: map.get("facebook") || DEFAULTS.facebook,
+    instagram: map.get("instagram") || DEFAULTS.instagram,
     taxMode,
     taxPercent: Number.isFinite(taxPercent) ? taxPercent : DEFAULTS.taxPercent,
     printTerms: map.get("printTerms") === "true",

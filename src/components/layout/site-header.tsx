@@ -3,12 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, User, X } from "lucide-react";
+import { Menu, MessageCircle, Phone, Search, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CartButton } from "@/components/cart/cart-button";
-
+import { FacebookIcon, InstagramIcon } from "@/components/icons/social-icons";
 import { MAIN_NAV } from "@/lib/navigation";
+import { SITE, whatsappHref } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
@@ -122,6 +123,47 @@ export function SiteHeader() {
               </li>
             ))}
           </ul>
+          <div className="mt-2 border-t border-white/10 pt-4 pb-2">
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-white/50">
+              Bize Ulaşın & Sosyal Medya
+            </p>
+            <div className="flex items-center gap-2.5">
+              <a
+                href={SITE.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]"
+              >
+                <InstagramIcon className="size-4" />
+              </a>
+              <a
+                href={SITE.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-[#1877F2]"
+              >
+                <FacebookIcon className="size-4" />
+              </a>
+              <a
+                href={whatsappHref()}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="flex size-9 items-center justify-center rounded-full bg-[#25D366] text-white transition-all"
+              >
+                <MessageCircle className="size-4" />
+              </a>
+              <a
+                href={SITE.phoneHref}
+                aria-label="Telefon"
+                className="flex size-9 items-center justify-center rounded-full bg-primary text-white transition-all"
+              >
+                <Phone className="size-4" />
+              </a>
+            </div>
+          </div>
         </nav>
       ) : null}
     </header>

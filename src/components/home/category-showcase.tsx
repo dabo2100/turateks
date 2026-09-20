@@ -142,7 +142,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "01",
     title: "BOY PARDESÜ YAĞMURLUK",
-    subtitle: "Rainwear",
+    subtitle: "Uzun Boy Pardesü & Trençkot",
     image: "/categories/rainwear.webp",
     href: "/urunler?kategori=hafif",
     objectPosition: "center 25%",
@@ -151,7 +151,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "02",
     title: "ÖNLÜK",
-    subtitle: "Aprons",
+    subtitle: "PVC Su Geçirmez İş Önlüğü",
     image: "/categories/apron.webp",
     href: "/urunler?kategori=insaat",
     objectPosition: "center 30%",
@@ -161,7 +161,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "03",
     title: "REFLEKTÖRLÜ BOY PARDESÜ",
-    subtitle: "High Visibility Raincoats",
+    subtitle: "Yüksek Görünürlüklü İş Güvenliği",
     image: "/categories/reflective-raincoat.webp",
     href: "/urunler?kategori=kurye",
     objectPosition: "center 25%",
@@ -170,7 +170,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "04",
     title: "BALIKÇI TİP TAKIM YAĞMURLUK",
-    subtitle: "Fishing Rainwear",
+    subtitle: "Açık Deniz & Ağır Hizmet Takım",
     image: "/categories/fishing-rainwear.webp",
     href: "/urunler?kategori=balikci",
     objectPosition: "center 35%",
@@ -179,7 +179,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "05",
     title: "MOTORCU TAKIM",
-    subtitle: "Motorcycle Rainwear",
+    subtitle: "Motokurye Su & Rüzgar Geçirmez",
     image: "/categories/motorcycle-rainwear.webp",
     href: "/urunler?kategori=kurye",
     objectPosition: "center 38%",
@@ -188,7 +188,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "06",
     title: "GIRGIR BALIKÇI TAKIM MUŞAMBA",
-    subtitle: "Trawler Fishing Suits",
+    subtitle: "Endüstriyel Balıkçı Muşambası",
     image: "/categories/fishing-suit.webp",
     href: "/urunler?kategori=denizci",
     objectPosition: "center 45%",
@@ -197,7 +197,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "07",
     title: "PANTOLON YAĞMURLUK",
-    subtitle: "Rain Pants",
+    subtitle: "Askılı & Beli Lastikli Pantolon",
     image: "/categories/rain-pants.webp",
     href: "/urunler?kategori=balikci",
     objectPosition: "center 60%",
@@ -206,7 +206,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "08",
     title: "ÇİZMELİ ÜRÜNLER",
-    subtitle: "Booted Products",
+    subtitle: "Dikişsiz Kaynaklı Çizmeli Tulum",
     image: "/categories/booted-products.webp",
     href: "/urunler?kategori=insaat",
     objectPosition: "center 75%",
@@ -215,7 +215,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   {
     number: "09",
     title: "KOLLUK",
-    subtitle: "Sleeves",
+    subtitle: "Su Geçirmez Koruyucu Kolluk",
     image: "/categories/sleeves.webp",
     href: "/urunler",
     objectPosition: "center 48%",
@@ -233,8 +233,8 @@ export function CategoryShowcase() {
       <ScrollReveal>
         <div className="flex items-center justify-center gap-3">
           <span className="h-px w-6 bg-border" aria-hidden="true" />
-          <span className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
-            OUR COLLECTIONS
+          <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase">
+            ÜRÜN KOLEKSİYONLARI
           </span>
           <span className="h-px w-6 bg-border" aria-hidden="true" />
         </div>
@@ -243,59 +243,48 @@ export function CategoryShowcase() {
           id="home-categories-heading"
           className="mt-3 text-center text-2xl font-extrabold tracking-tight text-neutral-950 sm:text-3xl lg:text-[38px] lg:leading-[1.18]"
         >
-          Explore our collections
+          Zorlu hava koşullarına meydan okuyan
           <br className="hidden sm:inline" />{" "}
-          inspired by the <span className="text-[#f58220]">sun</span> and the{" "}
-          <span className="text-[#3b82f6]">moon</span>.
+          profesyonel <span className="text-[#f58220]">yağmurluk</span> ve{" "}
+          <span className="text-[#3b82f6]">koruyucu</span> giysiler.
         </h2>
 
-        <p className="mt-2.5 text-center text-xs text-muted-foreground sm:text-sm md:text-base">
-          Professional protection. Real people. Every day.
+        <p className="mx-auto mt-2.5 max-w-2xl text-center text-xs text-muted-foreground sm:text-sm md:text-base">
+          Açık denizden şantiyeye, kuryeden endüstriyel tesislere: %100 su geçirmez profesyonel koruma ve toptan imalat çözümleri.
         </p>
       </ScrollReveal>
 
       {/* Responsive Grid:
-          Mobile: 6-column grid system
-            - Cards 01-06 span 3 cols (2 columns across)
-            - Cards 07-09 span 2 cols (3 columns across on the final row)
+          Mobile: 1 column across (cards stacked vertically under each other)
+          Tablet: 2 columns across
           Desktop: 3 columns across for all 9 cards
       */}
-      <ScrollRevealStagger className="mt-8  grid grid-cols-6 gap-2.5 sm:mt-10 sm:gap-3 md:grid-cols-3 md:gap-6.5">
-        {CATEGORIES_DATA.map((category, index) => {
+      <ScrollRevealStagger className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 md:gap-6.5">
+        {CATEGORIES_DATA.map((category) => {
           const Icon = category.icon;
-          const isFinalThreeMobile = index >= 6;
 
           return (
             <ScrollRevealItem
               key={category.number}
-              className={
-                
-                isFinalThreeMobile
-                  ? "col-span-2 md:col-span-1 "
-                  : "col-span-3 md:col-span-1"
-              }
+              className="w-full"
             >
               <Link
                 href={category.href}
-                className={`group relative block overflow-hidden rounded-xl sm:rounded-2xl bg-[#0b121d] transition-all duration-400 hover:-translate-y-0.5 hover:shadow-lg ${
-                  isFinalThreeMobile
-                    ? "aspect-[1/1.28] sm:aspect-[1/1.1] md:aspect-[2.6/1]"
-                    : "aspect-[1/1.06] sm:aspect-[1.15/1] md:aspect-[2.6/1]"
-                }`}
+                className="group relative block w-full overflow-hidden rounded-2xl bg-[#0b121d] aspect-[2.4/1] sm:aspect-[2.1/1] md:aspect-[2.6/1] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
               >
                 {/* Background Image */}
                 <Image
                   src={category.image}
                   alt={`${category.title} - ${category.subtitle}`}
                   fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                   style={{ objectPosition: category.objectPosition }}
-                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-104"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 />
 
                 {/* Dark Vignette Overlay for Readability while preserving photo brightness */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-r from-[#050c14]/85 via-[#050c14]/48 to-[#050c14]/10 transition-opacity duration-300 group-hover:opacity-90"
+                  className="absolute inset-0 bg-gradient-to-r from-[#050c14]/90 via-[#050c14]/50 to-[#050c14]/15 transition-opacity duration-300 group-hover:opacity-95"
                   aria-hidden="true"
                 />
                 <div
@@ -304,56 +293,39 @@ export function CategoryShowcase() {
                 />
 
                 {/* Card Content Overlay */}
-                <div className="relative flex h-full flex-col justify-between p-3 sm:p-4 md:p-4 lg:p-4.5">
+                <div className="relative flex h-full flex-col justify-between p-4 sm:p-4.5 lg:p-5">
                   {/* Top-Left: Number, Orange Accent Line, Outline Icon */}
                   <div className="flex flex-col gap-1.5 sm:gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold text-white/85 sm:text-xs">
+                      <span className="text-xs font-semibold text-white/85">
                         {category.number}
                       </span>
                       <span
-                        className="h-[2px] w-4 rounded-full bg-[#f58220] sm:w-5 md:w-6"
+                        className="h-[2px] w-5 rounded-full bg-[#f58220] sm:w-6"
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="size-4.5 text-white/90 sm:size-5 md:size-[22px]">
+                    <div className="size-5 text-white/90 sm:size-[22px]">
                       <Icon className="size-full stroke-[1.5]" />
                     </div>
                   </div>
 
                   {/* Middle / Bottom Content */}
-                  <div className="pr-7 sm:pr-8 md:pr-10 lg:pr-12">
-                    <h3
-                      className={`font-bold uppercase tracking-tight text-white leading-tight ${
-                        isFinalThreeMobile
-                          ? "text-[11px] sm:text-xs md:text-sm lg:text-[15px]"
-                          : "text-xs sm:text-sm md:text-sm lg:text-[15px]"
-                      }`}
-                    >
+                  <div className="pr-12 sm:pr-14">
+                    <h3 className="text-sm font-bold uppercase tracking-tight text-white leading-tight sm:text-[15px]">
                       {category.title}
                     </h3>
-                    <p
-                      className={`mt-0.5 text-white/70 ${
-                        isFinalThreeMobile
-                          ? "text-[9px] sm:text-[10px] md:text-xs"
-                          : "text-[10px] sm:text-xs md:text-xs"
-                      }`}
-                    >
+                    <p className="mt-0.5 text-xs text-white/70">
                       {category.subtitle}
                     </p>
-   
                   </div>
 
                   {/* Circular Arrow CTA */}
                   <div
-                    className={`absolute bottom-2.5 right-2.5 flex items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-xs text-white transition-all duration-300 group-hover:scale-105 group-hover:border-white/45 group-hover:bg-white/20 sm:bottom-3 sm:right-3 md:bottom-3.5 md:right-3.5 ${
-                      isFinalThreeMobile
-                        ? "size-7 sm:size-8 md:size-9 lg:size-10"
-                        : "size-7.5 sm:size-8.5 md:size-9 lg:size-10"
-                    }`}
+                    className="absolute bottom-3.5 right-3.5 flex size-9 sm:size-10 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-xs text-white transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:border-primary"
                     aria-hidden="true"
                   >
-                    <ArrowRight className="size-3 sm:size-3.5 md:size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </div>
                 </div>
               </Link>
@@ -362,13 +334,13 @@ export function CategoryShowcase() {
         })}
       </ScrollRevealStagger>
 
-      {/* Mobile Full-Width CTA: "View All Collections →" */}
+      {/* Mobile Full-Width CTA: "Tüm Koleksiyonları İncele →" */}
       <div className="mt-4 block sm:mt-5 md:hidden">
         <Link
           href="/urunler"
           className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#0d141f] px-6 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-black active:scale-[0.99]"
         >
-          <span>View All Collections</span>
+          <span>Tüm Koleksiyonları İncele</span>
           <ArrowRight className="size-4" />
         </Link>
       </div>

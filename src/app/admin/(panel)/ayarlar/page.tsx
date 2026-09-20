@@ -37,6 +37,26 @@ export default async function AdminSettingsPage() {
           <textarea name="address" defaultValue={settings.address} className={`${fieldClass} min-h-24`} />
         </label>
         <label className="text-sm">
+          Facebook Sayfası
+          <input
+            name="facebook"
+            type="url"
+            defaultValue={settings.facebook}
+            placeholder="https://www.facebook.com/..."
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
+          Instagram Profili
+          <input
+            name="instagram"
+            type="url"
+            defaultValue={settings.instagram}
+            placeholder="https://www.instagram.com/..."
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
           KDV
           <select name="taxMode" defaultValue={settings.taxMode} className={fieldClass}>
             <option value="included">Fiyatlara dahil</option>

@@ -8,7 +8,8 @@ import { getSettings } from "@/lib/settings";
 const schema = z.object({
   name: z.string().trim().min(2, "Ad soyad gerekli"),
   email: z.string().trim().email("Geçerli bir e-posta girin"),
-  phone: z.string().trim().min(10, "Telefon gerekli"),
+  phone: z.string().trim().optional(),
+  subject: z.string().trim().optional(),
   message: z.string().trim().min(10, "Mesaj en az 10 karakter olmalı"),
   website: z.string().optional(),
 });
@@ -18,6 +19,7 @@ export async function submitContact(formData: FormData) {
     name: formData.get("name"),
     email: formData.get("email"),
     phone: formData.get("phone"),
+    subject: formData.get("subject"),
     message: formData.get("message"),
     website: formData.get("website"),
   });
@@ -31,8 +33,8 @@ export async function submitContact(formData: FormData) {
   const settings = await getSettings();
   const to = process.env.CONTACT_TO_EMAIL || settings.email;
   try {
-    const { name, email, phone, message } = parsed.data;
-    await sendContactEmail({ to, name, email, phone, message });
+    const { name, email, phone, subject, message } = parsed.data;
+    await sendContactEmail({ to, name, email, phone, subject, message });
     return { ok: true as const };
   } catch (error) {
     console.error(error);

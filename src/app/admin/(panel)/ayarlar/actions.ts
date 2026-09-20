@@ -14,6 +14,8 @@ export async function saveSiteSettings(formData: FormData) {
     email: String(formData.get("email") ?? ""),
     whatsapp: String(formData.get("whatsapp") ?? "").replace(/\D/g, ""),
     address: String(formData.get("address") ?? ""),
+    facebook: String(formData.get("facebook") ?? "").trim(),
+    instagram: String(formData.get("instagram") ?? "").trim(),
     taxMode: formData.get("taxMode") === "extra" ? "extra" : "included",
     taxPercent: Number(formData.get("taxPercent") ?? 20),
     printTerms: formData.get("printTerms") === "on",
@@ -25,6 +27,8 @@ export async function saveSiteSettings(formData: FormData) {
     email: string;
     whatsapp: string;
     address: string;
+    facebook: string;
+    instagram: string;
     taxMode: TaxMode;
     taxPercent: number;
     printTerms: boolean;

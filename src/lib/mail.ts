@@ -67,10 +67,13 @@ export async function sendContactEmail(input: {
   to: string;
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
+  subject?: string;
   message: string;
 }) {
-  const subject = `Turateks iletişim formu — ${input.name}`;
-  const text = `Ad: ${input.name}\nE-posta: ${input.email}\nTelefon: ${input.phone}\n\n${input.message}`;
-  return sendTextEmail(input.to, subject, text, input.email);
+  const mailSubject = input.subject
+    ? `Turateks İletişim: ${input.subject} (${input.name})`
+    : `Turateks İletişim Formu — ${input.name}`;
+  const text = `Ad: ${input.name}\nE-posta: ${input.email}\nTelefon: ${input.phone || "Belirtilmedi"}\nKonu: ${input.subject || "Genel"}\n\n${input.message}`;
+  return sendTextEmail(input.to, mailSubject, text, input.email);
 }
