@@ -1,18 +1,28 @@
 import type { MetadataRoute } from "next";
 
+import { BLOG_POSTS } from "@/lib/blog-data";
 import { loadCatalog, loadCategories } from "@/lib/catalog";
 import { prisma } from "@/lib/db";
 import { PUBLIC_PAGE_PATH, absoluteUrl } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, categories, posts] = await Promise.all([
+  const [products, categories, dbPosts] = await Promise.all([
     loadCatalog(),
     loadCategories(),
-    prisma.post.findMany({
-      where: { published: true },
-      select: { slug: true, updatedAt: true },
-    }),
+    prisma.post
+      .findMany({
+        where: { published: true },
+        select: { slug: true, updatedAt: true },
+      })
+      .catch(() => null),
   ]);
+
+  const posts = dbPosts && dbPosts.length > 0
+    ? dbPosts
+    : BLOG_POSTS.map((p) => ({
+        slug: p.slug,
+        updatedAt: new Date(p.updatedAt),
+      }));
 
   const staticPaths = [
     "/",
@@ -46,8 +56,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...posts.map((post) => ({
       url: absoluteUrl(`/blog/${post.slug}`),
       lastModified: post.updatedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
     })),
   ];
 }

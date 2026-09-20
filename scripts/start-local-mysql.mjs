@@ -4,9 +4,32 @@ import net from "node:net";
 import path from "node:path";
 
 const root = process.cwd();
-const mysqlHome = "C:/Program Files/MySQL/MySQL Server 8.4";
-const mysqld = path.join(mysqlHome, "bin", "mysqld.exe");
-const mysql = path.join(mysqlHome, "bin", "mysql.exe");
+function getMysqlPaths() {
+  const candidates = [
+    "C:/Program Files/MySQL/MySQL Server 8.4",
+    "C:/Program Files/MySQL/MySQL Server 8.0",
+    "C:/Program Files/MySQL/MySQL Server 8.1",
+    "C:/Program Files/MySQL/MySQL Server 8.2",
+    "C:/Program Files/MySQL/MySQL Server 8.3",
+    "C:/Program Files/MySQL/MySQL Server 9.0",
+    "C:/Program Files/MySQL/MySQL Server 9.1",
+    "C:/xampp/mysql",
+    "D:/xampp/mysql",
+  ];
+  for (const dir of candidates) {
+    const d = path.join(dir, "bin", "mysqld.exe");
+    const m = path.join(dir, "bin", "mysql.exe");
+    if (fs.existsSync(d) && fs.existsSync(m)) {
+      return { mysqlHome: dir, mysqld: d, mysql: m };
+    }
+  }
+  return null;
+}
+
+const mysqlPaths = getMysqlPaths();
+const mysqlHome = mysqlPaths?.mysqlHome ?? "C:/Program Files/MySQL/MySQL Server 8.4";
+const mysqld = mysqlPaths?.mysqld ?? path.join(mysqlHome, "bin", "mysqld.exe");
+const mysql = mysqlPaths?.mysql ?? path.join(mysqlHome, "bin", "mysql.exe");
 const dataDir = path.join(root, ".mysql-data");
 const runtimeDir = path.join(root, ".mysql-runtime");
 const configFile = path.join(runtimeDir, "my.ini");
@@ -40,10 +63,10 @@ if (await isListening(3306)) {
   process.exit(0);
 }
 
-if (process.platform !== "win32" || !fs.existsSync(mysqld)) {
-  console.error("MySQL 8.4 is not installed at the expected Windows path.");
-  console.error("Install Oracle.MySQL with winget, or start the database configured in DATABASE_URL.");
-  process.exit(1);
+if (process.platform !== "win32" || !mysqlPaths) {
+  console.warn("⚠️ MySQL is not installed at expected Windows paths and not listening on 3306.");
+  console.warn("⚠️ The app will run using mock catalog fallback. To use MySQL, start it or configure DATABASE_URL.");
+  process.exit(0);
 }
 
 fs.mkdirSync(dataDir, { recursive: true });

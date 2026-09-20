@@ -63,6 +63,8 @@ export default async function RootLayout({
             email: settings.email,
             phoneDisplay: settings.phoneDisplay,
             address: settings.address,
+            facebook: settings.facebook,
+            instagram: settings.instagram,
           })}
         />
         <StoreShell

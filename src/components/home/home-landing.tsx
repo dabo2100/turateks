@@ -11,8 +11,9 @@ import {
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
+import { BlogSlider, type BlogSliderItem } from "@/components/home/blog-slider";
 import { CategoryShowcase } from "@/components/home/category-showcase";
-import { FeaturedProductCarousel } from "@/components/home/featured-product-carousel";
+import { CatalogSlider } from "@/components/home/catalog-slider";
 import { HeroCarousel } from "@/components/home/hero-carousel";
 import { VideoShowcaseSection } from "@/components/home/video-showcase-section";
 import { buttonVariants } from "@/components/ui/button";
@@ -61,15 +62,9 @@ const TRUST_ITEMS = [
   },
 ] as const;
 
-type BlogTeaser = {
-  slug: string;
-  title: string;
-  createdAt: string;
-};
-
 type HomeLandingProps = {
   catalog: MockProduct[];
-  posts: BlogTeaser[];
+  posts: BlogSliderItem[];
 };
 
 export function HomeLanding({ catalog, posts }: HomeLandingProps) {
@@ -80,61 +75,87 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
       <HeroCarousel />
 
       <section
-        className="border-b border-border bg-white "
-        aria-label="Alışveriş avantajları"
+        className="relative z-10 border-b border-border/80 bg-gradient-to-b from-[#111315]/5 via-background to-background py-3.5 sm:py-8"
+        aria-label="Turateks avantajları"
       >
-        <ScrollReveal>
-          <ul className="mx-auto grid max-w-6xl gap-4 px-4 py-5 sm:grid-cols-2 sm:gap-0 sm:py-6 lg:grid-cols-4">
-            {TRUST_ITEMS.map(({ icon: Icon, title, text }, i) => (
-              <li
-                key={title}
-                className={cn(
-                  "flex items-center gap-3 sm:px-4 lg:px-5",
-                  i > 0 && "sm:border-l sm:border-border",
-                )}
+        {/* Mobile: Infinite Moving Ticker / Marquee Strip */}
+        <div className="relative overflow-hidden sm:hidden py-0.5">
+          {/* Gradient fade masks on edges */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-background to-transparent" />
+
+          <div className="flex w-max">
+            {[0, 1].map((copyIdx) => (
+              <div
+                key={copyIdx}
+                className="animate-marquee shrink-0 items-center gap-3.5 pr-3.5"
+                aria-hidden={copyIdx > 0}
               >
-                <Icon
-                  className="size-8 shrink-0 text-charcoal"
-                  strokeWidth={1.5}
-                  aria-hidden
-                />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold tracking-wide text-charcoal uppercase sm:text-[0.8125rem]">
-                    {title}
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
-                    {text}
-                  </p>
-                </div>
-              </li>
+                {TRUST_ITEMS.map(({ icon: Icon, title, text }) => (
+                  <div
+                    key={title}
+                    className="flex shrink-0 items-center gap-3 rounded-2xl border border-border/80 bg-white px-4 py-2.5 shadow-xs"
+                  >
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary shadow-xs">
+                      <Icon className="size-4.5" strokeWidth={2} aria-hidden />
+                    </div>
+                    <div className="whitespace-nowrap">
+                      <p className="text-[11px] font-black uppercase tracking-wider text-charcoal">
+                        {title}
+                      </p>
+                      <p className="text-[10px] leading-tight text-muted-foreground">
+                        {text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ))}
-          </ul>
-        </ScrollReveal>
+          </div>
+        </div>
+
+        {/* Tablet & Desktop: 4 Grid Cards */}
+        <div className="mx-auto hidden max-w-6xl px-4 sm:block">
+          <ScrollReveal>
+            <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+              {TRUST_ITEMS.map(({ icon: Icon, title, text }) => (
+                <li
+                  key={title}
+                  className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-border/70 bg-white p-4 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
+                >
+                  {/* Subtle hover gradient accent */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary/[0.04] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                  {/* Icon Box */}
+                  <div className="relative flex size-12 shrink-0 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white group-hover:shadow-md group-hover:shadow-primary/25 sm:size-13">
+                    <Icon
+                      className="size-6 transition-transform duration-300 group-hover:rotate-6"
+                      strokeWidth={1.8}
+                      aria-hidden
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative min-w-0 flex-1">
+                    <p className="text-xs sm:text-[13px] font-black tracking-wider text-charcoal uppercase transition-colors group-hover:text-primary">
+                      {title}
+                    </p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                      {text}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </ScrollReveal>
+        </div>
       </section>
 
       <CategoryShowcase />
 
       <VideoShowcaseSection />
 
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
-        <ScrollReveal>
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Öne çıkan ürünler
-          </p>
-          <div className="mt-2 flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Katalog
-            </h2>
-            <Link
-              href="/urunler"
-              className="shrink-0 text-sm text-primary hover:underline"
-            >
-              Tümünü gör →
-            </Link>
-          </div>
-        </ScrollReveal>
-        <FeaturedProductCarousel products={catalog} />
-      </section>
+      <CatalogSlider products={catalog} />
 
       <section className="bg-surface">
         <ScrollRevealStagger className="mx-auto grid max-w-6xl gap-5 px-4 py-14 sm:grid-cols-2 sm:gap-6 sm:py-16 md:grid-cols-3">
@@ -212,49 +233,7 @@ export function HomeLanding({ catalog, posts }: HomeLandingProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
-        <ScrollReveal>
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Blog
-          </p>
-          <div className="mt-2 flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Teknik & sektör
-            </h2>
-            <Link
-              href="/blog"
-              className="shrink-0 text-sm text-primary hover:underline"
-            >
-              Tüm yazılar →
-            </Link>
-          </div>
-        </ScrollReveal>
-        <ScrollRevealStagger className="mt-8 grid gap-5 sm:gap-6 md:grid-cols-3">
-          {posts.length === 0 ? (
-            <ScrollRevealItem>
-              <p className="text-sm text-muted-foreground">
-                Yayınlanmış yazı henüz yok.
-              </p>
-            </ScrollRevealItem>
-          ) : (
-            posts.map((post) => (
-              <ScrollRevealItem key={post.slug}>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="block rounded-xl border border-border p-5 transition-colors hover:border-primary/40"
-                >
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(post.createdAt).toLocaleDateString("tr-TR")}
-                  </p>
-                  <h3 className="mt-3 font-semibold tracking-tight">
-                    {post.title}
-                  </h3>
-                </Link>
-              </ScrollRevealItem>
-            ))
-          )}
-        </ScrollRevealStagger>
-      </section>
+      <BlogSlider posts={posts} />
     </>
   );
 }
