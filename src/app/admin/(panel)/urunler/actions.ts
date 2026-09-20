@@ -52,11 +52,14 @@ async function resolveCategoryId(categoryId: string | undefined, newCategoryName
   throw new Error("Kategori gerekli");
 }
 
-async function syncTags(productId: string, raw: string) {
+async function syncTags(productId: string, raw: string, wholesale: boolean) {
   const names = raw
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
+  if (wholesale && !names.some((n) => n.toLocaleLowerCase("tr") === "toptan")) {
+    names.push("Toptan");
+  }
   await prisma.productTag.deleteMany({ where: { productId } });
   for (const name of names) {
     const tag = await prisma.tag.upsert({
@@ -146,7 +149,8 @@ export async function saveProduct(input: ProductInput) {
           },
         });
 
-    await syncTags(saved.id, data.tags);
+    await syncTags(saved.id, data.tags, data.wholesale);
+    revalidatePath("/toptan");
     revalidatePath("/urunler");
     revalidatePath(`/urunler/${saved.slug}`);
     revalidatePath("/admin/urunler");

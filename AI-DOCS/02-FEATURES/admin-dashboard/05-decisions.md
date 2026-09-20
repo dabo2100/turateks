@@ -19,3 +19,19 @@
 ### AD-DEC-04
 - **Status:** Approved
 - **Decision:** Order statuses: `pending`, `paid`, `processing`, `shipped`, `failed`, `cancelled`. Owner can set processing/shipped after payment.
+
+### AD-DEC-06
+- **Status:** Approved
+- **Decision:** Admin panel uses an independent mint SaaS visual system (SalesSync-style reference): soft mint accent, light gray workspace, white cards, flat inputs, light sidebar with mint active pill. Storefront orange/charcoal brand tokens stay unchanged.
+
+### AD-DEC-07
+- **Status:** Approved
+- **Decision:** Product images support drag-and-drop upload to `public/uploads/products/` via authenticated admin API; URLs still stored on `ProductImage`.
+
+### AD-DEC-08
+- **Status:** Approved
+- **Decision:** Dedicated Categories CRUD at `/admin/kategoriler`. Product classification remains: (1) `Category` relation, (2) `wholesale` boolean — when true, product appears on `/toptan` and receives a `Toptan` tag. No schema migration required.
+
+### AD-DEC-09
+- **Status:** Approved
+- **Decision:** Admin UI copy stays Turkish only.

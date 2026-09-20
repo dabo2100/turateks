@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { fieldClass } from "@/lib/admin-ui";
+import { fieldClass, labelClass } from "@/lib/admin-ui";
 
 export function ResetPasswordForm({ token }: { token: string }) {
   const router = useRouter();
@@ -42,8 +42,8 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-sm space-y-4">
-      <label className="block text-sm">
+    <form onSubmit={onSubmit} className="space-y-4">
+      <label className={labelClass}>
         Yeni şifre
         <input
           type="password"
@@ -55,7 +55,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
           className={fieldClass}
         />
       </label>
-      <label className="block text-sm">
+      <label className={labelClass}>
         Yeni şifre (tekrar)
         <input
           type="password"
@@ -67,7 +67,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
           className={fieldClass}
         />
       </label>
-      <Button type="submit" className="h-11 w-full" disabled={pending}>
+      <Button type="submit" className="h-11 w-full rounded-2xl" disabled={pending}>
         {pending ? "Kaydediliyor…" : "Şifreyi kaydet"}
       </Button>
     </form>

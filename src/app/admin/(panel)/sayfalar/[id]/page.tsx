@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { PageForm } from "@/components/admin/page-form";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -12,7 +13,7 @@ export default async function AdminPageEditPage({ params }: { params: Promise<{ 
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">{page.title}</h1>
+      <AdminPageHeader title={page.title} description={`/${page.slug}`} />
       <PageForm
         id={page.id}
         title={page.title}

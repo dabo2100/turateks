@@ -1,13 +1,18 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Check, FileText, Plus, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { deleteProduct, saveProduct } from "@/app/admin/(panel)/urunler/actions";
+import { AdminCard } from "@/components/admin/admin-card";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { ProductImageUploader } from "@/components/admin/product-image-uploader";
 import { Button } from "@/components/ui/button";
-import { fieldClass } from "@/lib/admin-ui";
+import { adminOutlineBtnClass, adminPrimaryBtnClass, fieldClass, labelClass } from "@/lib/admin-ui";
 import { slugify } from "@/lib/slug";
+import { cn } from "@/lib/utils";
 
 type CategoryOption = { id: string; name: string; slug: string };
 
@@ -39,10 +44,12 @@ const EMPTY: ProductFormValue = {
   tags: "",
   images: [{ label: "Ön", url: "" }],
   colors: [{ slug: "", label: "", hex: "#333333" }],
-  sizes: [{ label: "M" }],
+  sizes: [{ label: "S" }, { label: "M" }, { label: "L" }, { label: "XL" }],
   tiers: [{ minQty: 1, maxQty: null, unitPriceTry: 0 }],
   specs: [{ label: "", value: "" }],
 };
+
+const SIZE_PRESETS = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export function ProductForm({
   categories,
@@ -51,13 +58,23 @@ export function ProductForm({
   categories: CategoryOption[];
   initial?: ProductFormValue;
 }) {
-  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [form, setForm] = useState<ProductFormValue>(initial ?? EMPTY);
-  const [newCategoryName, setNewCategoryName] = useState("");
 
   function patch<K extends keyof ProductFormValue>(key: K, value: ProductFormValue[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function toggleSize(label: string) {
+    const exists = form.sizes.some((s) => s.label === label);
+    if (exists) {
+      patch(
+        "sizes",
+        form.sizes.filter((s) => s.label !== label),
+      );
+      return;
+    }
+    patch("sizes", [...form.sizes, { label }]);
   }
 
   function onSave() {
@@ -65,7 +82,6 @@ export function ProductForm({
       const result = await saveProduct({
         ...form,
         slug: form.slug || slugify(form.name),
-        newCategoryName: newCategoryName || undefined,
         categoryId: form.categoryId || undefined,
         images: form.images.filter((i) => i.url.trim()),
         colors: form.colors.filter((c) => c.label.trim()),
@@ -81,193 +97,377 @@ export function ProductForm({
   }
 
   return (
-    <div className="space-y-8">
-      <section className="grid gap-4 rounded-xl border border-border bg-background p-4 sm:grid-cols-2">
-        <label className="text-sm sm:col-span-2">
-          Ad
-          <input
-            className={fieldClass}
-            value={form.name}
-            onChange={(e) => {
-              const name = e.target.value;
-              setForm((prev) => ({
-                ...prev,
-                name,
-                slug: initial?.id ? prev.slug : slugify(name),
-              }));
-            }}
-          />
-        </label>
-        <label className="text-sm">
-          Slug
-          <input className={fieldClass} value={form.slug} onChange={(e) => patch("slug", slugify(e.target.value))} />
-        </label>
-        <label className="text-sm">
-          SKU
-          <input className={fieldClass} value={form.sku} onChange={(e) => patch("sku", e.target.value)} />
-        </label>
-        <label className="text-sm">
-          Kategori
-          <select className={fieldClass} value={form.categoryId} onChange={(e) => patch("categoryId", e.target.value)}>
-            <option value="">Seçin</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-sm">
-          Yeni kategori
-          <input className={fieldClass} value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} />
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={form.wholesale} onChange={(e) => patch("wholesale", e.target.checked)} />
-          Toptan
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={form.isNew} onChange={(e) => patch("isNew", e.target.checked)} />
-          Yeni ürün
-        </label>
-        <label className="text-sm sm:col-span-2">
-          Açıklama
-          <textarea className={`${fieldClass} min-h-28`} value={form.description} onChange={(e) => patch("description", e.target.value)} />
-        </label>
-        <label className="text-sm sm:col-span-2">
-          Etiketler (virgülle)
-          <input className={fieldClass} value={form.tags} onChange={(e) => patch("tags", e.target.value)} />
-        </label>
-      </section>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title={form.id ? form.name || "Ürünü düzenle" : "Yeni ürün ekle"}
+        description="Kategori ve satış tipi (toptan/perakende) ürünün mağazada nasıl listeleneceğini belirler."
+        actions={
+          <>
+            <Link href="/admin/urunler" className={adminOutlineBtnClass}>
+              <FileText className="size-4" />
+              Listeye dön
+            </Link>
+            <button type="button" className={adminPrimaryBtnClass} disabled={pending || form.name.trim().length < 2} onClick={onSave}>
+              <Check className="size-4" />
+              {pending ? "Kaydediliyor…" : form.id ? "Ürünü güncelle" : "Ürün ekle"}
+            </button>
+          </>
+        }
+      />
 
-      <ListBlock
-        title="Görseller"
-        onAdd={() => patch("images", [...form.images, { label: "", url: "" }])}
-      >
-        {form.images.map((row, index) => (
-          <div key={index} className="grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
-            <input className={fieldClass} placeholder="Etiket" value={row.label} onChange={(e) => patch("images", form.images.map((r, i) => (i === index ? { ...r, label: e.target.value } : r)))} />
-            <input className={fieldClass} placeholder="/uploads/..." value={row.url} onChange={(e) => patch("images", form.images.map((r, i) => (i === index ? { ...r, url: e.target.value } : r)))} />
-            <Button type="button" variant="ghost" onClick={() => patch("images", form.images.filter((_, i) => i !== index))}>
-              Sil
-            </Button>
-          </div>
-        ))}
-      </ListBlock>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.8fr)]">
+        <div className="space-y-6">
+          <AdminCard title="Genel bilgiler">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className={`${labelClass} sm:col-span-2`}>
+                Ürün adı
+                <input
+                  className={fieldClass}
+                  value={form.name}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    setForm((prev) => ({
+                      ...prev,
+                      name,
+                      slug: initial?.id ? prev.slug : slugify(name),
+                    }));
+                  }}
+                />
+              </label>
+              <label className={labelClass}>
+                Slug
+                <input className={fieldClass} value={form.slug} onChange={(e) => patch("slug", slugify(e.target.value))} />
+              </label>
+              <label className={labelClass}>
+                SKU
+                <input className={fieldClass} value={form.sku} onChange={(e) => patch("sku", e.target.value)} />
+              </label>
+              <label className={`${labelClass} sm:col-span-2`}>
+                Açıklama
+                <textarea
+                  className={`${fieldClass} min-h-32`}
+                  value={form.description}
+                  onChange={(e) => patch("description", e.target.value)}
+                />
+              </label>
+              <div className="sm:col-span-2">
+                <p className={labelClass}>Bedenler</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {SIZE_PRESETS.map((size) => {
+                    const active = form.sizes.some((s) => s.label === size);
+                    return (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => toggleSize(size)}
+                        className={cn(
+                          "inline-flex size-11 items-center justify-center rounded-2xl text-sm font-semibold transition",
+                          active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80",
+                        )}
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {form.sizes
+                    .filter((s) => !SIZE_PRESETS.includes(s.label))
+                    .map((row) => (
+                      <span key={row.label} className="inline-flex items-center gap-1 rounded-2xl bg-muted px-3 py-1.5 text-sm">
+                        {row.label}
+                        <button type="button" className="text-muted-foreground hover:text-foreground" onClick={() => toggleSize(row.label)}>
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  <button
+                    type="button"
+                    className="inline-flex h-9 items-center gap-1 rounded-2xl bg-muted px-3 text-xs font-semibold text-muted-foreground"
+                    onClick={() => {
+                      const label = prompt("Özel beden");
+                      if (!label?.trim()) return;
+                      if (!form.sizes.some((s) => s.label === label.trim())) {
+                        patch("sizes", [...form.sizes, { label: label.trim() }]);
+                      }
+                    }}
+                  >
+                    <Plus className="size-3.5" />
+                    Özel beden
+                  </button>
+                </div>
+              </div>
+              <div className="sm:col-span-2">
+                <p className={labelClass}>Satış tipi</p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  {[
+                    { value: false, label: "Perakende", hint: "Normal ürün listesinde" },
+                    { value: true, label: "Toptan", hint: "/toptan sayfasında + Toptan etiketi" },
+                  ].map((option) => {
+                    const active = form.wholesale === option.value;
+                    return (
+                      <button
+                        key={String(option.value)}
+                        type="button"
+                        onClick={() => patch("wholesale", option.value)}
+                        className={cn(
+                          "rounded-2xl px-4 py-3 text-left transition",
+                          active ? "bg-[var(--admin-mint-soft,#e6f7ef)] ring-2 ring-primary/50" : "bg-muted",
+                        )}
+                      >
+                        <span className="block text-sm font-semibold">{option.label}</span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">{option.hint}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <label className="flex items-center gap-3 rounded-2xl bg-muted px-4 py-3 text-sm font-medium sm:col-span-2">
+                <input
+                  type="checkbox"
+                  className="size-4 accent-[var(--admin-mint-strong,#6bcf9b)]"
+                  checked={form.isNew}
+                  onChange={(e) => patch("isNew", e.target.checked)}
+                />
+                Yeni ürün rozeti
+              </label>
+            </div>
+          </AdminCard>
 
-      <ListBlock title="Renkler" onAdd={() => patch("colors", [...form.colors, { slug: "", label: "", hex: "#888888" }])}>
-        {form.colors.map((row, index) => (
-          <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_80px_auto]">
-            <input
-              className={fieldClass}
-              placeholder="Ad"
-              value={row.label}
-              onChange={(e) =>
-                patch(
-                  "colors",
-                  form.colors.map((r, i) => (i === index ? { ...r, label: e.target.value, slug: slugify(e.target.value) } : r)),
-                )
-              }
-            />
-            <input className={fieldClass} placeholder="slug" value={row.slug} onChange={(e) => patch("colors", form.colors.map((r, i) => (i === index ? { ...r, slug: slugify(e.target.value) } : r)))} />
-            <input className={fieldClass} type="color" value={row.hex} onChange={(e) => patch("colors", form.colors.map((r, i) => (i === index ? { ...r, hex: e.target.value } : r)))} />
-            <Button type="button" variant="ghost" onClick={() => patch("colors", form.colors.filter((_, i) => i !== index))}>
-              Sil
-            </Button>
-          </div>
-        ))}
-      </ListBlock>
+          <AdminCard title="Fiyat kademeleri" description="Adet aralığına göre birim fiyat (₺).">
+            <div className="space-y-3">
+              {form.tiers.map((row, index) => (
+                <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]">
+                  <label className={labelClass}>
+                    Min adet
+                    <input
+                      className={fieldClass}
+                      type="number"
+                      min={1}
+                      value={row.minQty}
+                      onChange={(e) =>
+                        patch(
+                          "tiers",
+                          form.tiers.map((r, i) => (i === index ? { ...r, minQty: Number(e.target.value) } : r)),
+                        )
+                      }
+                    />
+                  </label>
+                  <label className={labelClass}>
+                    Max adet
+                    <input
+                      className={fieldClass}
+                      type="number"
+                      placeholder="∞"
+                      value={row.maxQty ?? ""}
+                      onChange={(e) =>
+                        patch(
+                          "tiers",
+                          form.tiers.map((r, i) =>
+                            i === index ? { ...r, maxQty: e.target.value === "" ? null : Number(e.target.value) } : r,
+                          ),
+                        )
+                      }
+                    />
+                  </label>
+                  <label className={labelClass}>
+                    Birim fiyat
+                    <input
+                      className={fieldClass}
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      value={row.unitPriceTry}
+                      onChange={(e) =>
+                        patch(
+                          "tiers",
+                          form.tiers.map((r, i) => (i === index ? { ...r, unitPriceTry: Number(e.target.value) } : r)),
+                        )
+                      }
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="mt-7 h-11 rounded-xl"
+                    onClick={() => patch("tiers", form.tiers.filter((_, i) => i !== index))}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-xl"
+                onClick={() => patch("tiers", [...form.tiers, { minQty: 1, maxQty: null, unitPriceTry: 0 }])}
+              >
+                <Plus className="size-4" />
+                Kademe ekle
+              </Button>
+            </div>
+          </AdminCard>
 
-      <ListBlock title="Bedenler" onAdd={() => patch("sizes", [...form.sizes, { label: "" }])}>
-        {form.sizes.map((row, index) => (
-          <div key={index} className="flex gap-2">
-            <input className={fieldClass} value={row.label} onChange={(e) => patch("sizes", form.sizes.map((r, i) => (i === index ? { ...r, label: e.target.value } : r)))} />
-            <Button type="button" variant="ghost" onClick={() => patch("sizes", form.sizes.filter((_, i) => i !== index))}>
-              Sil
-            </Button>
-          </div>
-        ))}
-      </ListBlock>
+          <AdminCard title="Renkler">
+            <div className="space-y-3">
+              {form.colors.map((row, index) => (
+                <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_80px_auto]">
+                  <input
+                    className={fieldClass}
+                    placeholder="Renk adı"
+                    value={row.label}
+                    onChange={(e) =>
+                      patch(
+                        "colors",
+                        form.colors.map((r, i) =>
+                          i === index ? { ...r, label: e.target.value, slug: slugify(e.target.value) } : r,
+                        ),
+                      )
+                    }
+                  />
+                  <input
+                    className={fieldClass}
+                    placeholder="slug"
+                    value={row.slug}
+                    onChange={(e) =>
+                      patch(
+                        "colors",
+                        form.colors.map((r, i) => (i === index ? { ...r, slug: slugify(e.target.value) } : r)),
+                      )
+                    }
+                  />
+                  <input
+                    className={`${fieldClass} h-12 p-1`}
+                    type="color"
+                    value={row.hex}
+                    onChange={(e) =>
+                      patch(
+                        "colors",
+                        form.colors.map((r, i) => (i === index ? { ...r, hex: e.target.value } : r)),
+                      )
+                    }
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="h-12 rounded-xl"
+                    onClick={() => patch("colors", form.colors.filter((_, i) => i !== index))}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-xl"
+                onClick={() => patch("colors", [...form.colors, { slug: "", label: "", hex: "#888888" }])}
+              >
+                <Plus className="size-4" />
+                Renk ekle
+              </Button>
+            </div>
+          </AdminCard>
 
-      <ListBlock
-        title="Fiyat kademeleri (₺ / adet)"
-        onAdd={() => patch("tiers", [...form.tiers, { minQty: 1, maxQty: null, unitPriceTry: 0 }])}
-      >
-        {form.tiers.map((row, index) => (
-          <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]">
-            <input className={fieldClass} type="number" min={1} value={row.minQty} onChange={(e) => patch("tiers", form.tiers.map((r, i) => (i === index ? { ...r, minQty: Number(e.target.value) } : r)))} />
-            <input
-              className={fieldClass}
-              type="number"
-              placeholder="max"
-              value={row.maxQty ?? ""}
-              onChange={(e) => patch("tiers", form.tiers.map((r, i) => (i === index ? { ...r, maxQty: e.target.value === "" ? null : Number(e.target.value) } : r)))}
-            />
-            <input className={fieldClass} type="number" min={0} step="0.01" value={row.unitPriceTry} onChange={(e) => patch("tiers", form.tiers.map((r, i) => (i === index ? { ...r, unitPriceTry: Number(e.target.value) } : r)))} />
-            <Button type="button" variant="ghost" onClick={() => patch("tiers", form.tiers.filter((_, i) => i !== index))}>
-              Sil
-            </Button>
-          </div>
-        ))}
-      </ListBlock>
+          <AdminCard title="Teknik özellikler">
+            <div className="space-y-3">
+              {form.specs.map((row, index) => (
+                <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                  <input
+                    className={fieldClass}
+                    placeholder="Özellik"
+                    value={row.label}
+                    onChange={(e) =>
+                      patch(
+                        "specs",
+                        form.specs.map((r, i) => (i === index ? { ...r, label: e.target.value } : r)),
+                      )
+                    }
+                  />
+                  <input
+                    className={fieldClass}
+                    placeholder="Değer"
+                    value={row.value}
+                    onChange={(e) =>
+                      patch(
+                        "specs",
+                        form.specs.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)),
+                      )
+                    }
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="h-12 rounded-xl"
+                    onClick={() => patch("specs", form.specs.filter((_, i) => i !== index))}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-xl"
+                onClick={() => patch("specs", [...form.specs, { label: "", value: "" }])}
+              >
+                <Plus className="size-4" />
+                Özellik ekle
+              </Button>
+            </div>
+          </AdminCard>
+        </div>
 
-      <ListBlock title="Teknik özellikler" onAdd={() => patch("specs", [...form.specs, { label: "", value: "" }])}>
-        {form.specs.map((row, index) => (
-          <div key={index} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
-            <input className={fieldClass} placeholder="Kumaş" value={row.label} onChange={(e) => patch("specs", form.specs.map((r, i) => (i === index ? { ...r, label: e.target.value } : r)))} />
-            <input className={fieldClass} placeholder="PVC" value={row.value} onChange={(e) => patch("specs", form.specs.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)))} />
-            <Button type="button" variant="ghost" onClick={() => patch("specs", form.specs.filter((_, i) => i !== index))}>
-              Sil
-            </Button>
-          </div>
-        ))}
-      </ListBlock>
+        <div className="space-y-6 xl:sticky xl:top-6 xl:self-start">
+          <AdminCard title="Ürün görselleri" description="Sürükle-bırak veya + ile yükleyin.">
+            <ProductImageUploader images={form.images} onChange={(images) => patch("images", images)} />
+          </AdminCard>
 
-      <div className="flex flex-wrap gap-3">
-        <Button type="button" className="h-10 px-4" disabled={pending || form.name.trim().length < 2} onClick={onSave}>
-          {pending ? "Kaydediliyor…" : "Kaydet"}
-        </Button>
-        {form.id ? (
-          <Button
-            type="button"
-            variant="outline"
-            className="h-10 px-4"
-            disabled={pending}
-            onClick={() => {
-              if (!confirm("Ürün silinsin mi?")) return;
-              startTransition(async () => {
-                await deleteProduct(form.id!);
-              });
-            }}
-          >
-            Sil
-          </Button>
-        ) : null}
-        <Button type="button" variant="ghost" className="h-10 px-4" onClick={() => router.push("/admin/urunler")}>
-          Listeye dön
-        </Button>
+          <AdminCard title="Kategori">
+            <label className={labelClass}>
+              Ürün kategorisi
+              <select className={fieldClass} value={form.categoryId} onChange={(e) => patch("categoryId", e.target.value)}>
+                <option value="">Seçin</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Link href="/admin/kategoriler" className={`${adminOutlineBtnClass} mt-4 w-full`}>
+              <Plus className="size-4" />
+              Kategori yönet
+            </Link>
+            <label className={`${labelClass} mt-4`}>
+              Etiketler (virgülle)
+              <input className={fieldClass} value={form.tags} onChange={(e) => patch("tags", e.target.value)} />
+            </label>
+            {form.wholesale ? (
+              <p className="mt-2 text-xs text-muted-foreground">Toptan seçiliyken kayıtta otomatik “Toptan” etiketi eklenir.</p>
+            ) : null}
+          </AdminCard>
+
+          {form.id ? (
+            <AdminCard title="Tehlikeli alan">
+              <Button
+                type="button"
+                variant="destructive"
+                className="h-11 rounded-2xl px-4"
+                disabled={pending}
+                onClick={() => {
+                  if (!confirm("Ürün silinsin mi?")) return;
+                  startTransition(async () => {
+                    await deleteProduct(form.id!);
+                  });
+                }}
+              >
+                Ürünü sil
+              </Button>
+            </AdminCard>
+          ) : null}
+        </div>
       </div>
     </div>
-  );
-}
-
-function ListBlock({
-  title,
-  onAdd,
-  children,
-}: {
-  title: string;
-  onAdd: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="space-y-3 rounded-xl border border-border bg-background p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-semibold">{title}</h2>
-        <Button type="button" variant="outline" size="sm" onClick={onAdd}>
-          Ekle
-        </Button>
-      </div>
-      {children}
-    </section>
   );
 }

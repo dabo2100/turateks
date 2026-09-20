@@ -7,11 +7,13 @@ Simple owner panel after storefront works. Direct screens: products, orders, pag
 ## In scope
 
 - Auth gate `admin`
-- Products + variants + tiers + images
+- Products + variants + tiers + images (drag-drop upload)
+- Categories CRUD
 - Orders list/status
 - Pages/blog
 - Settings (tax, NAP, PayTR env already on server)
-- Clear forms, Sonner, tables (Chart.js only if a real chart is requested)
+- Clear SaaS forms, Sonner, tables (Chart.js only if a real chart is requested)
+- Independent mint admin visual system (storefront brand unchanged)
 
 ## Out of scope
 

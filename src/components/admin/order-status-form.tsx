@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { updateOrderStatus } from "@/app/admin/(panel)/siparisler/actions";
 import { Button } from "@/components/ui/button";
-import { fieldClass } from "@/lib/admin-ui";
+import { fieldClass, labelClass } from "@/lib/admin-ui";
 import { ADMIN_ORDER_STATUSES, ORDER_STATUS_LABEL } from "@/lib/order-labels";
 
 export function OrderStatusForm({ orderId, status }: { orderId: string; status: OrderStatus }) {
@@ -24,7 +24,7 @@ export function OrderStatusForm({ orderId, status }: { orderId: string; status: 
         });
       }}
     >
-      <label className="text-sm">
+      <label className={labelClass}>
         Durum
         <select name="status" defaultValue={status} className={fieldClass}>
           {ADMIN_ORDER_STATUSES.map((value) => (
@@ -34,7 +34,7 @@ export function OrderStatusForm({ orderId, status }: { orderId: string; status: 
           ))}
         </select>
       </label>
-      <Button type="submit" className="h-10 px-4" disabled={pending}>
+      <Button type="submit" className="h-12 rounded-2xl px-5" disabled={pending}>
         Güncelle
       </Button>
     </form>

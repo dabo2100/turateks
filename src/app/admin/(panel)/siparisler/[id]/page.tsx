@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 
+import { AdminCard } from "@/components/admin/admin-card";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { OrderStatusForm } from "@/components/admin/order-status-form";
+import { adminTableWrapClass, adminTdClass, adminThClass } from "@/lib/admin-ui";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatTry } from "@/lib/mock-catalog";
@@ -18,35 +21,54 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-sm text-muted-foreground">{order.merchantOid}</p>
-        <h1 className="text-2xl font-semibold">{order.name}</h1>
-        <p className="text-sm text-muted-foreground">{ORDER_STATUS_LABEL[order.status]}</p>
+      <AdminPageHeader
+        title={order.name}
+        description={`${order.merchantOid} · ${ORDER_STATUS_LABEL[order.status]}`}
+      />
+
+      <AdminCard title="Durum">
+        <OrderStatusForm orderId={order.id} status={order.status} />
+      </AdminCard>
+
+      <AdminCard title="Teslimat">
+        <div className="space-y-1 text-sm">
+          <p>{order.email}</p>
+          <p>{order.phone}</p>
+          <p>
+            {order.address}, {order.district} / {order.city}
+          </p>
+          {order.company ? <p>{order.company}</p> : null}
+        </div>
+      </AdminCard>
+
+      <div className={adminTableWrapClass}>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className={adminThClass}>Kalem</th>
+              <th className={adminThClass}>Adet</th>
+              <th className={adminThClass}>Tutar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {order.items.map((item) => (
+              <tr key={item.id} className="border-b border-border last:border-0">
+                <td className={adminTdClass}>
+                  {item.name}
+                  <span className="block text-xs text-muted-foreground">
+                    {item.sku}
+                    {item.color ? ` · ${item.color}` : ""}
+                    {item.size ? ` · ${item.size}` : ""}
+                  </span>
+                </td>
+                <td className={adminTdClass}>{item.qty}</td>
+                <td className={adminTdClass}>{formatTry(kurusToTry(item.unitPrice * item.qty))}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <OrderStatusForm orderId={order.id} status={order.status} />
-      <section className="rounded-xl border border-border bg-background p-4 text-sm">
-        <p>{order.email}</p>
-        <p>{order.phone}</p>
-        <p>
-          {order.address}, {order.district} / {order.city}
-        </p>
-        {order.company ? <p>{order.company}</p> : null}
-      </section>
-      <ul className="divide-y rounded-xl border border-border bg-background">
-        {order.items.map((item) => (
-          <li key={item.id} className="flex flex-col gap-1 px-4 py-3 text-sm sm:flex-row sm:justify-between">
-            <span>
-              {item.name} × {item.qty}
-              <span className="block text-xs text-muted-foreground">
-                {item.sku}
-                {item.color ? ` · ${item.color}` : ""}
-                {item.size ? ` · ${item.size}` : ""}
-              </span>
-            </span>
-            <span>{formatTry(kurusToTry(item.unitPrice * item.qty))}</span>
-          </li>
-        ))}
-      </ul>
+
       <p className="text-right text-lg font-semibold">Toplam {formatTry(kurusToTry(order.total))}</p>
     </div>
   );

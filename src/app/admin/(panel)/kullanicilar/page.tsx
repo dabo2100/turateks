@@ -1,4 +1,7 @@
 import { CreateAdminForm, RemoveAdminButton } from "@/components/admin/admin-users-forms";
+import { AdminCard } from "@/components/admin/admin-card";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { adminTableWrapClass, adminTdClass, adminThClass } from "@/lib/admin-ui";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
@@ -10,31 +13,30 @@ export default async function AdminUsersPage() {
   });
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold">Yöneticiler</h1>
-        <p className="text-sm text-muted-foreground">Panele e-posta ve şifre ile giren hesaplar.</p>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader title="Yöneticiler" description="Panele e-posta ve şifre ile giren hesaplar." />
 
-      <CreateAdminForm />
+      <AdminCard title="Yeni yönetici">
+        <CreateAdminForm />
+      </AdminCard>
 
-      <div className="overflow-x-auto rounded-xl border border-border bg-background">
+      <div className={adminTableWrapClass}>
         <table className="w-full text-sm">
-          <thead className="bg-surface text-left text-muted-foreground">
-            <tr>
-              <th className="px-4 py-3">E-posta</th>
-              <th className="px-4 py-3">Ad</th>
-              <th className="px-4 py-3">Rol</th>
-              <th className="px-4 py-3" />
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className={adminThClass}>E-posta</th>
+              <th className={adminThClass}>Ad</th>
+              <th className={adminThClass}>Rol</th>
+              <th className={adminThClass} />
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-t border-border">
-                <td className="px-4 py-3">{user.email}</td>
-                <td className="px-4 py-3">{user.name ?? "—"}</td>
-                <td className="px-4 py-3">{user.role === "super_admin" ? "Super admin" : "Admin"}</td>
-                <td className="px-4 py-3 text-right">
+              <tr key={user.id} className="border-b border-border last:border-0">
+                <td className={adminTdClass}>{user.email}</td>
+                <td className={adminTdClass}>{user.name ?? "—"}</td>
+                <td className={adminTdClass}>{user.role === "super_admin" ? "Super admin" : "Admin"}</td>
+                <td className={`${adminTdClass} text-right`}>
                   {actor.role === "super_admin" && user.role === "admin" ? <RemoveAdminButton id={user.id} /> : null}
                 </td>
               </tr>

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { createAdminUser, deleteAdminUser } from "@/app/admin/(panel)/kullanicilar/actions";
 import { Button } from "@/components/ui/button";
-import { fieldClass } from "@/lib/admin-ui";
+import { fieldClass, labelClass } from "@/lib/admin-ui";
 
 export function CreateAdminForm() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export function CreateAdminForm() {
 
   return (
     <form
-      className="grid max-w-xl gap-3 rounded-xl border border-border bg-background p-4"
+      className="grid max-w-xl gap-3"
       onSubmit={(e) => {
         e.preventDefault();
         const form = e.currentTarget;
@@ -31,20 +31,19 @@ export function CreateAdminForm() {
         });
       }}
     >
-      <h2 className="font-semibold">Yeni yönetici</h2>
-      <label className="text-sm">
+      <label className={labelClass}>
         Ad
         <input name="name" className={fieldClass} disabled={pending} />
       </label>
-      <label className="text-sm">
+      <label className={labelClass}>
         E-posta
         <input name="email" type="email" required className={fieldClass} disabled={pending} />
       </label>
-      <label className="text-sm">
+      <label className={labelClass}>
         Şifre
         <input name="password" type="password" required minLength={8} className={fieldClass} disabled={pending} />
       </label>
-      <Button type="submit" className="h-10 w-fit px-4" disabled={pending}>
+      <Button type="submit" className="h-11 w-fit rounded-2xl px-5" disabled={pending}>
         {pending ? "Kaydediliyor…" : "Yönetici ekle"}
       </Button>
     </form>
@@ -58,7 +57,7 @@ export function RemoveAdminButton({ id }: { id: string }) {
     <Button
       type="button"
       variant="ghost"
-      className="h-8 px-2 text-destructive"
+      className="h-8 rounded-xl px-2 text-destructive"
       disabled={pending}
       onClick={() => {
         if (!confirm("Bu yöneticinin panel erişimi kaldırılsın mı?")) return;

@@ -25,31 +25,28 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   if (!product) notFound();
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">{product.name}</h1>
-      <ProductForm
-        categories={categories}
-        initial={{
-          id: product.id,
-          name: product.name,
-          slug: product.slug,
-          sku: product.sku,
-          description: product.description,
-          wholesale: product.wholesale,
-          isNew: product.isNew,
-          categoryId: product.categoryId,
-          tags: product.tags.map((t) => t.tag.name).join(", "),
-          images: product.images.map((i) => ({ label: i.label, url: i.url ?? "" })),
-          colors: product.colors.map((c) => ({ slug: c.slug, label: c.label, hex: c.hex })),
-          sizes: product.sizes.map((s) => ({ label: s.label })),
-          tiers: product.tiers.map((t) => ({
-            minQty: t.minQty,
-            maxQty: t.maxQty,
-            unitPriceTry: kurusToTry(t.unitPrice),
-          })),
-          specs: product.specs.map((s) => ({ label: s.label, value: s.value })),
-        }}
-      />
-    </div>
+    <ProductForm
+      categories={categories}
+      initial={{
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        sku: product.sku,
+        description: product.description,
+        wholesale: product.wholesale,
+        isNew: product.isNew,
+        categoryId: product.categoryId,
+        tags: product.tags.map((t) => t.tag.name).join(", "),
+        images: product.images.map((i) => ({ label: i.label, url: i.url ?? "" })),
+        colors: product.colors.map((c) => ({ slug: c.slug, label: c.label, hex: c.hex })),
+        sizes: product.sizes.map((s) => ({ label: s.label })),
+        tiers: product.tiers.map((t) => ({
+          minQty: t.minQty,
+          maxQty: t.maxQty,
+          unitPriceTry: kurusToTry(t.unitPrice),
+        })),
+        specs: product.specs.map((s) => ({ label: s.label, value: s.value })),
+      }}
+    />
   );
 }

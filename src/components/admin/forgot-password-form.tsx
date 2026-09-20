@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { fieldClass } from "@/lib/admin-ui";
+import { fieldClass, labelClass } from "@/lib/admin-ui";
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -31,8 +31,8 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-sm space-y-4">
-      <label className="block text-sm">
+    <form onSubmit={onSubmit} className="space-y-4">
+      <label className={labelClass}>
         E-posta
         <input
           type="email"
@@ -42,11 +42,11 @@ export function ForgotPasswordForm() {
           className={fieldClass}
         />
       </label>
-      <Button type="submit" className="h-11 w-full" disabled={pending}>
+      <Button type="submit" className="h-11 w-full rounded-2xl" disabled={pending}>
         {pending ? "Gönderiliyor…" : "Sıfırlama bağlantısı gönder"}
       </Button>
       <p className="text-center text-sm">
-        <Link href="/admin/giris" className="text-primary hover:underline">
+        <Link href="/admin/giris" className="font-medium text-foreground/70 hover:text-foreground">
           Girişe dön
         </Link>
       </p>

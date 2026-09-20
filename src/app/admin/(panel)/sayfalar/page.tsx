@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { adminTableWrapClass, adminTdClass, adminThClass } from "@/lib/admin-ui";
 import { requireAdmin } from "@/lib/auth";
 import { ensureDefaultPages } from "@/lib/cms";
 import { prisma } from "@/lib/db";
@@ -11,20 +13,31 @@ export default async function AdminPagesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Sayfalar</h1>
-      <ul className="divide-y rounded-xl border border-border bg-background">
-        {pages.map((page) => (
-          <li key={page.id} className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-medium">{page.title}</p>
-              <p className="text-xs text-muted-foreground">/{page.slug}</p>
-            </div>
-            <Link href={`/admin/sayfalar/${page.id}`} className="text-sm text-primary">
-              Düzenle
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <AdminPageHeader title="Sayfalar" description="Yasal ve kurumsal içerik sayfalarını düzenleyin." />
+      <div className={adminTableWrapClass}>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className={adminThClass}>Sayfa</th>
+              <th className={adminThClass}>Slug</th>
+              <th className={adminThClass} />
+            </tr>
+          </thead>
+          <tbody>
+            {pages.map((page) => (
+              <tr key={page.id} className="border-b border-border last:border-0">
+                <td className={`${adminTdClass} font-medium`}>{page.title}</td>
+                <td className={`${adminTdClass} text-muted-foreground`}>/{page.slug}</td>
+                <td className={`${adminTdClass} text-right`}>
+                  <Link href={`/admin/sayfalar/${page.id}`} className="text-sm font-semibold hover:text-primary">
+                    Düzenle
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

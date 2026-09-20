@@ -93,6 +93,48 @@
   --sidebar-ring: #f58220;
 }
 
+/* Admin SaaS theme — scoped; storefront tokens stay orange/charcoal */
+.admin-app {
+  --admin-mint: #8fd9b5;
+  --admin-mint-strong: #6bcf9b;
+  --admin-mint-soft: #e6f7ef;
+  --admin-mint-muted: #d4f0e3;
+  --admin-canvas: #f3f4f6;
+  --admin-sidebar: #ffffff;
+  --admin-ink: #1e293b;
+  --admin-muted: #94a3b8;
+  --admin-input: #eef0f3;
+  --admin-card: #ffffff;
+  --radius: 0.9rem;
+
+  --background: var(--admin-card);
+  --foreground: var(--admin-ink);
+  --card: var(--admin-card);
+  --card-foreground: var(--admin-ink);
+  --popover: var(--admin-card);
+  --popover-foreground: var(--admin-ink);
+  --primary: var(--admin-mint);
+  --primary-foreground: #14352a;
+  --secondary: var(--admin-input);
+  --secondary-foreground: var(--admin-ink);
+  --muted: var(--admin-input);
+  --muted-foreground: #64748b;
+  --accent: var(--admin-mint-soft);
+  --accent-foreground: var(--admin-ink);
+  --border: #e8eaee;
+  --input: var(--admin-input);
+  --ring: var(--admin-mint-strong);
+  --surface: var(--admin-canvas);
+  --sidebar: var(--admin-sidebar);
+  --sidebar-foreground: var(--admin-ink);
+  --sidebar-primary: var(--admin-mint);
+  --sidebar-primary-foreground: #14352a;
+  --sidebar-accent: var(--admin-mint-soft);
+  --sidebar-accent-foreground: var(--admin-ink);
+  --sidebar-border: #eef0f3;
+  --sidebar-ring: var(--admin-mint-strong);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
