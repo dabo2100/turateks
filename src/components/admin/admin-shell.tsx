@@ -22,22 +22,13 @@ const TITLE_MAP: { prefix: string; title: string }[] = [
 
 export function AdminShell({ email, children }: { email: string; children: React.ReactNode }) {
   const pathname = usePathname();
-<<<<<<< HEAD
-  const [navPath, setNavPath] = useState(pathname);
-
-  if (navPath !== pathname) {
-    setNavPath(pathname);
-    setOpen(false);
-  }
+  const [openedAtPath, setOpenedAtPath] = useState<string | null>(null);
+  const open = openedAtPath === pathname;
 
   const pageTitle = useMemo(() => {
     const match = TITLE_MAP.find((item) => pathname === item.prefix || pathname.startsWith(`${item.prefix}/`));
     return match?.title ?? "Yönetim";
   }, [pathname]);
-=======
-  const [openedAtPath, setOpenedAtPath] = useState<string | null>(null);
-  const open = openedAtPath === pathname;
->>>>>>> 1a60ce13e48154f667815bb05fdaefd62cc77af1
 
   useEffect(() => {
     if (!open) return;
